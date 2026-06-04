@@ -40,7 +40,7 @@ const resumeSchema = new mongoose.Schema<IResume>({
         default: []
     },
     workExperience: {
-        types: [
+        type: [
             {
                 company: String,
                 position: String,
@@ -76,6 +76,6 @@ const resumeSchema = new mongoose.Schema<IResume>({
     timestamps: true
 })
 
-const ResumeModel = mongoose.model('Resume', resumeSchema);
+const ResumeModel = mongoose.models.Resume || mongoose.model('Resume', resumeSchema);
 
 export default ResumeModel;

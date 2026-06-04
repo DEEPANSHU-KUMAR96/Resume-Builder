@@ -5,15 +5,15 @@ import { ApiResponse } from "@/types/api.types";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function GET(req: NextRequest, { params }: { params: { resumeid: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ resumeid: string }> }) {
     try {
         await connectToDB()
 
         const user = await getCurrentUser();
 
         const { resumeid } = await params;
-
-        const resume = await ResumeModel.findById(params.resumeid)
+ 
+        const resume = await ResumeModel.findById(resumeid)
 
         if (!resume) {
             return NextResponse.json<ApiResponse>(
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest, { params }: { params: { resumeid: st
         return NextResponse.json<ApiResponse>(
             {
                 success: true,
-                message: "resume fatched successfully",
+                message: "Resume fetched successfully",
                 data: resume
             },
             { status: 200 }
@@ -82,7 +82,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ re
         return NextResponse.json<ApiResponse>(
             {
                 success: true,
-                message: "updated resume fatched successfully",
+                message: "Resume updated successfully",
                 data: updatedResume
             },
             { status: 200 }
