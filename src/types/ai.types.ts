@@ -22,3 +22,18 @@ export interface GenerateWorkExperienceBody {
     duration: string;
     techStack: string[];
 }
+
+export interface ImproveContentBody {
+    content: string;
+}
+
+export interface AtsScoreBody {
+  resumeText: string;
+}
+
+export interface AtsScoreResponse {
+  score: number;
+  suggestions: string[];
+  strengths: string[];
+  missing: string[];
+}
