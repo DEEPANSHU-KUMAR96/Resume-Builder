@@ -24,7 +24,7 @@ export default function SummaryPage() {
   const [saving, setSaving] = useState(false);
   const [summary, setSummary] = useState('');
   const [generatingSummary, setGeneratingSummary] = useState(false);
-  
+
   // AI related state
   const [jobTitle, setJobTitle] = useState('');
   const [experienceLevel, setExperienceLevel] = useState('Mid-Level');
@@ -47,21 +47,21 @@ export default function SummaryPage() {
         const resumeData = response.data.data;
         setResume(resumeData);
         setSummary(resumeData.summary || '');
-        
+
         // Auto-detect job title from the most recent work experience if it exists
         if (resumeData.workExperience && resumeData.workExperience.length > 0) {
-            setJobTitle(resumeData.workExperience[0].position);
+          setJobTitle(resumeData.workExperience[0].position);
         }
       } else {
         toast.error(response.data.message || 'Failed to fetch resume');
         router.push('/dashboard');
       }
     } catch (error: any) {
-        if (error.response?.status === 401) {
-          router.push('/auth/login');
-        } else {
-          toast.error(error.response?.data?.message || 'Failed to fetch resume');
-        }
+      if (error.response?.status === 401) {
+        router.push('/auth/login');
+      } else {
+        toast.error(error.response?.data?.message || 'Failed to fetch resume');
+      }
     } finally {
       setLoading(false);
     }
@@ -79,8 +79,8 @@ export default function SummaryPage() {
     }
 
     if (!resume?.skills || resume.skills.length === 0) {
-        toast.error('Please add some skills in the Skills section first to help AI generate a contextual summary');
-        return;
+      toast.error('Please add some skills in the Skills section first to help AI generate a contextual summary');
+      return;
     }
 
     try {
@@ -142,171 +142,152 @@ export default function SummaryPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]">
         <div className="text-center">
-          <div className="animate-spin h-12 w-12 text-indigo-600 mx-auto mb-4 border-4 border-indigo-100 border-t-indigo-600 rounded-full"></div>
-          <p className="text-gray-600 font-medium">Preparing your summary workspace...</p>
+          <div className="animate-spin h-12 w-12 text-[#DC143C] mx-auto mb-4 border-4 border-white/5 border-t-[#DC143C] rounded-full"></div>
+          <p className="text-gray-500 font-medium tracking-tight">Preparing your summary workspace...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Premium Navbar */}
-      <nav className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors flex items-center gap-1">
-            <span className="text-lg">←</span> Dashboard
+    <div className="min-h-screen bg-[#0A0A0A] text-white relative overflow-x-hidden">
+      {/* Background Accents */}
+      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-[#DC143C]/10 to-transparent -z-0 pointer-events-none"></div>
+
+      {/* Navbar */}
+      <nav className="glass sticky top-0 z-50 border-b border-white/5">
+        <div className="max-w-5xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+          <Link href="/dashboard" className="group flex items-center gap-2 text-gray-400 hover:text-white transition-all font-bold uppercase tracking-widest text-[10px]">
+            <span className="group-hover:-translate-x-1 transition-transform">←</span> Dashboard
           </Link>
-          <div className="flex items-center gap-3">
-            <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-            </span>
-            <h1 className="text-lg font-bold text-gray-900 tracking-tight">AI Resume Builder</h1>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#DC143C] rounded-full animate-pulse"></div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Step 6: Summary</span>
           </div>
-          <div className="w-20"></div>
         </div>
       </nav>
 
-      <main className="max-w-4xl mx-auto px-4 py-12 md:py-20">
+      <main className="max-w-5xl mx-auto px-4 md:px-6 py-12 md:py-20 relative z-10">
         {/* Header Section */}
-        <div className="mb-12 text-center">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
-            Professional <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Summary</span>
-          </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
-            This is your elevator pitch. Make it count with a high-impact summary that captures your career essence.
+        <div className="mb-14 text-center">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">Professional Summary</h2>
+          <p className="text-gray-500 text-sm md:text-base font-medium max-w-2xl mx-auto leading-relaxed">
+            Elevate your profile with a high-impact narrative that captures your architectural vision and career depth.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10">
+
           {/* AI Helper Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-3xl shadow-2xl shadow-indigo-100/50 p-7 border border-indigo-50 sticky top-28">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="p-2.5 bg-indigo-50 rounded-2xl text-indigo-600">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
+            <div className="glass rounded-[2rem] p-8 border border-white/5 shadow-2xl sticky top-28 overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[#DC143C]/5 blur-2xl rounded-full"></div>
+
+              <div className="flex items-center gap-3 mb-10 relative z-10">
+                <div className="w-10 h-10 flex items-center justify-center bg-[#DC143C]/10 rounded-xl text-[#DC143C] border border-[#DC143C]/20">
+                  <span className="text-xl">✨</span>
                 </div>
-                <h3 className="font-extrabold text-gray-900">Magic AI Writer</h3>
+                <h3 className="text-sm font-bold text-white uppercase tracking-widest">AI Content Engine</h3>
               </div>
-              
-              <div className="space-y-5">
-                <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2 px-1">
+
+              <div className="space-y-6 relative z-10">
+                <div className="group">
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 px-1 group-focus-within:text-[#DC143C]">
                     Target Job Title
                   </label>
                   <input
                     type="text"
                     value={jobTitle}
                     onChange={(e) => setJobTitle(e.target.value)}
-                    placeholder="e.g. Senior Frontend Dev"
-                    className="w-full px-4 py-3 rounded-2xl border border-gray-100 bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all text-sm font-medium"
+                    placeholder="e.g. Senior Software Architect"
+                    className="w-full px-5 py-3 rounded-xl border-2 border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50 outline-none transition-all text-sm font-medium text-white placeholder-gray-700"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2 px-1">
-                    Experience Level
+                <div className="group">
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 px-1 group-focus-within:text-[#DC143C]">
+                    Seniority Grade
                   </label>
                   <select
                     value={experienceLevel}
                     onChange={(e) => setExperienceLevel(e.target.value)}
-                    className="w-full px-4 py-3 rounded-2xl border border-gray-100 bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all text-sm font-medium"
+                    className="w-full px-5 py-3 rounded-xl border-2 border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50 outline-none transition-all text-sm font-medium text-white appearance-none cursor-pointer"
                   >
-                    <option>Entry-Level</option>
-                    <option>Mid-Level</option>
-                    <option>Senior-Level</option>
-                    <option>Executive</option>
+                    <option className="bg-[#0A0A0A]">Entry-Level</option>
+                    <option className="bg-[#0A0A0A]">Mid-Level</option>
+                    <option className="bg-[#0A0A0A]">Senior-Level</option>
+                    <option className="bg-[#0A0A0A]">Executive</option>
                   </select>
                 </div>
 
                 <button
                   onClick={handleGenerateSummary}
                   disabled={generatingSummary}
-                  className="w-full py-4 bg-gradient-to-br from-indigo-600 via-indigo-600 to-purple-600 hover:shadow-xl hover:shadow-indigo-200 text-white font-bold rounded-2xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none text-sm group"
+                  className="w-full h-12 bg-white text-black hover:bg-[#F5F0E8] font-bold rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 text-[10px] uppercase tracking-widest flex items-center justify-center gap-2"
                 >
-                  <span className="flex items-center justify-center gap-2">
-                    {generatingSummary ? (
-                        <>
-                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Synthesizing...
-                        </>
-                    ) : (
-                        <>
-                            <span className="group-hover:rotate-12 transition-transform">✨</span> 
-                            Generate with AI
-                        </>
-                    )}
-                  </span>
+                  {generatingSummary ? (
+                    <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                  ) : (
+                    <><span>✨</span> Generate Summary</>
+                  )}
                 </button>
               </div>
-              
-              <div className="mt-8 pt-6 border-t border-gray-50">
-                <div className="bg-blue-50 p-4 rounded-2xl">
-                    <p className="text-[11px] text-blue-700 font-medium leading-relaxed flex gap-2">
-                        <span>💡</span>
-                        Our AI analyzes your skills and background to generate an industry-standard, ATS-optimized summary.
-                    </p>
-                </div>
+
+              <div className="mt-10 pt-8 border-t border-white/5 group/tip">
+                <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest leading-relaxed flex items-start gap-2 group-hover/tip:text-gray-400 transition-colors">
+                  <span className="text-[#DC143C]">💡</span>
+                  The AI engine analyzes your distinct competencies to construct an ATS-optimized professional narrative.
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Main Editor Card */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-gray-200/50 p-8 md:p-10 border border-gray-100 min-h-[500px] flex flex-col group">
-              <div className="flex items-center justify-between mb-8">
-                <h3 className="font-black text-gray-900 text-2xl tracking-tight">Personal Manifesto</h3>
-                <div className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <div className="glass rounded-[2rem] p-6 md:p-10 border border-white/5 shadow-2xl flex flex-col relative overflow-hidden group/editor">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 blur-3xl rounded-full group-hover/editor:bg-[#DC143C]/5 transition-colors duration-1000"></div>
+
+              <div className="flex items-center justify-between mb-8 relative z-10">
+                <h3 className="text-lg font-bold text-white tracking-tight">Professional Narrative</h3>
+                <div className="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold text-gray-500 uppercase tracking-widest border border-white/5">
                   {summary.length} Characters
                 </div>
               </div>
 
-              <div className="relative flex-1 flex flex-col">
+              <div className="relative flex-1 flex flex-col z-10">
                 <textarea
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
-                  placeholder="Enter your professional summary here... For better results, use the AI generator →"
-                  className="flex-1 w-full p-8 rounded-[2rem] border-2 border-transparent bg-gray-50/50 focus:bg-white focus:border-indigo-500/20 focus:ring-0 outline-none transition-all text-gray-700 text-lg leading-relaxed resize-none scrollbar-hide"
+                  placeholder="Articulate your career journey, leadership impact, and technical depth here..."
+                  className="flex-1 w-full p-6 md:p-8 rounded-2xl border-2 border-white/5 bg-[#1A1A1A] focus:bg-[#1A1A1A] focus:border-[#DC143C]/20 outline-none transition-all text-gray-300 text-base md:text-lg leading-relaxed resize-none placeholder-gray-800"
                 />
               </div>
 
               {/* Action Bar */}
-              <div className="mt-10 flex items-center justify-between gap-4">
+              <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
                 <Link
-                  href={`/resume/${resumeId}/achievements`}
-                  className="px-8 py-4 text-gray-400 font-bold hover:text-gray-900 hover:bg-gray-100 rounded-2xl transition-all"
+                  href={`/resume/${resumeId}/experience`}
+                  className="w-full sm:w-auto px-10 py-4 text-gray-500 font-bold hover:text-white transition-all uppercase tracking-widest text-[10px]"
                 >
-                  Back
+                  ← Previous section
                 </Link>
                 <button
                   onClick={handleSave}
                   disabled={saving || !summary}
-                  className="group relative px-10 py-4 bg-gray-900 hover:bg-indigo-600 text-white font-bold rounded-2xl shadow-xl hover:shadow-indigo-200 transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none overflow-hidden"
+                  className="w-full sm:w-auto px-12 h-14 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold rounded-2xl shadow-xl shadow-[#DC143C]/20 transition-all active:scale-95 disabled:opacity-30 uppercase tracking-widest text-xs flex items-center justify-center gap-3"
                 >
-                  <span className="relative z-10 flex items-center gap-2">
-                    {saving ? 'Saving...' : 'Finalize & Preview'}
-                    {!saving && <span className="group-hover:translate-x-1 transition-transform">→</span>}
-                  </span>
+                  {saving ? (
+                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    <>Preview Resume <span className="text-lg">→</span></>
+                  )}
                 </button>
               </div>
             </div>
           </div>
         </div>
       </main>
-      
-      {/* Visual background decorations */}
-      <div className="fixed top-0 left-0 -z-10 w-full h-full overflow-hidden pointer-events-none opacity-20">
-          <div className="absolute top-[10%] left-[5%] w-64 h-64 bg-indigo-200 rounded-full blur-[100px]"></div>
-          <div className="absolute bottom-[10%] right-[5%] w-96 h-96 bg-purple-100 rounded-full blur-[120px]"></div>
-      </div>
     </div>
   );
 }

@@ -54,7 +54,7 @@ STRICT RULES:
         return NextResponse.json<ApiResponse>(
             {
                 success: false,
-                message: "Somthing went wrong",
+                message: "Something went wrong",
             },
             { status: 500 }
         )

@@ -280,44 +280,47 @@ export default function ExperiencePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-[#0A0A0A] text-white relative overflow-x-hidden">
+      {/* Background Accents */}
+      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-[#DC143C]/10 to-transparent -z-0 pointer-events-none"></div>
+
       {/* Navbar */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-2">
-              ← Back to Dashboard
-            </Link>
-            <h1 className="text-xl font-bold text-gray-900">Experience</h1>
-            <div className="w-24"></div>
+      <nav className="glass sticky top-0 z-50 border-b border-white/5">
+        <div className="max-w-5xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+          <Link href="/dashboard" className="group flex items-center gap-2 text-gray-400 hover:text-white transition-all font-bold uppercase tracking-widest text-[10px]">
+            <span className="group-hover:-translate-x-1 transition-transform">←</span> Dashboard
+          </Link>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#DC143C] rounded-full animate-pulse"></div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Step 3: Experience</span>
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-16 relative z-10">
+
         {/* Page Header */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Work Experience</h2>
-          <p className="text-gray-600">Add your professional work experience</p>
+        <div className="mb-10 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">Work Experience</h2>
+          <p className="text-gray-500 text-sm md:text-base font-medium">Detail your professional journey and key accomplishments.</p>
         </div>
 
         {/* Main Card */}
-        <div className="bg-white rounded-xl shadow-lg p-8 md:p-10">
-          
+        <div className="glass rounded-[2rem] p-6 md:p-10 border border-white/5 shadow-2xl relative overflow-hidden">
+
           {/* Form Section */}
-          <div className="border-b border-gray-200 pb-8 mb-8">
-            <h3 className="text-lg font-bold text-gray-900 mb-6">
-              {editingIndex !== null ? 'Edit Experience' : 'Add New Experience'}
+          <div className="border-b border-white/5 pb-10 mb-10">
+            <h3 className="text-lg font-bold text-white mb-8">
+              {editingIndex !== null ? 'Edit Experience record' : 'Add New Experience'}
             </h3>
 
-            <div className="space-y-6">
-              
+            <div className="space-y-8">
+
               {/* Company & Position */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="group">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1 group-focus-within:text-[#DC143C]">
                     Company Name *
                   </label>
                   <input
@@ -325,20 +328,19 @@ export default function ExperiencePage() {
                     name="company"
                     value={formData.company || ''}
                     onChange={handleChange}
-                    placeholder="e.g., Google, Microsoft"
-                    className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                      errors.company
-                        ? 'border-red-500 focus:border-red-500'
-                        : 'border-gray-200 focus:border-blue-500'
-                    } focus:outline-none bg-gray-50`}
+                    placeholder="e.g. Google, Microsoft"
+                    className={`w-full px-5 py-3 rounded-xl border-2 transition-all font-medium text-sm md:text-base ${errors.company
+                      ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                      : 'border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50'
+                      } focus:outline-none text-white placeholder-gray-700`}
                   />
                   {errors.company && (
-                    <p className="mt-2 text-sm text-red-600">⚠️ {errors.company}</p>
+                    <p className="mt-2 text-xs text-red-500 font-medium px-1">{errors.company}</p>
                   )}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="group">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1 group-focus-within:text-[#DC143C]">
                     Job Title/Position *
                   </label>
                   <input
@@ -346,23 +348,22 @@ export default function ExperiencePage() {
                     name="position"
                     value={formData.position || ''}
                     onChange={handleChange}
-                    placeholder="e.g., Senior Software Engineer"
-                    className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                      errors.position
-                        ? 'border-red-500 focus:border-red-500'
-                        : 'border-gray-200 focus:border-blue-500'
-                    } focus:outline-none bg-gray-50`}
+                    placeholder="e.g. Senior Software Engineer"
+                    className={`w-full px-5 py-3 rounded-xl border-2 transition-all font-medium text-sm md:text-base ${errors.position
+                      ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                      : 'border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50'
+                      } focus:outline-none text-white placeholder-gray-700`}
                   />
                   {errors.position && (
-                    <p className="mt-2 text-sm text-red-600">⚠️ {errors.position}</p>
+                    <p className="mt-2 text-xs text-red-500 font-medium px-1">{errors.position}</p>
                   )}
                 </div>
               </div>
 
               {/* Dates */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="group">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1 group-focus-within:text-[#DC143C]">
                     Start Date *
                   </label>
                   <input
@@ -370,19 +371,18 @@ export default function ExperiencePage() {
                     name="startDate"
                     value={formData.startDate || ''}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                      errors.startDate
-                        ? 'border-red-500 focus:border-red-500'
-                        : 'border-gray-200 focus:border-blue-500'
-                    } focus:outline-none bg-gray-50`}
+                    className={`w-full px-5 py-3 rounded-xl border-2 transition-all font-medium text-sm md:text-base ${errors.startDate
+                      ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                      : 'border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50'
+                      } focus:outline-none text-white`}
                   />
                   {errors.startDate && (
-                    <p className="mt-2 text-sm text-red-600">⚠️ {errors.startDate}</p>
+                    <p className="mt-2 text-xs text-red-500 font-medium px-1">{errors.startDate}</p>
                   )}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="group">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1 group-focus-within:text-[#DC143C]">
                     End Date *
                   </label>
                   <input
@@ -390,80 +390,74 @@ export default function ExperiencePage() {
                     name="endDate"
                     value={formData.endDate || ''}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                      errors.endDate
-                        ? 'border-red-500 focus:border-red-500'
-                        : 'border-gray-200 focus:border-blue-500'
-                    } focus:outline-none bg-gray-50`}
+                    className={`w-full px-5 py-3 rounded-xl border-2 transition-all font-medium text-sm md:text-base ${errors.endDate
+                      ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                      : 'border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50'
+                      } focus:outline-none text-white`}
                   />
                   {errors.endDate && (
-                    <p className="mt-2 text-sm text-red-600">⚠️ {errors.endDate}</p>
+                    <p className="mt-2 text-xs text-red-500 font-medium px-1">{errors.endDate}</p>
                   )}
                 </div>
               </div>
 
               {/* Description with AI */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-gray-700">
+              <div className="group">
+                <div className="flex items-center justify-between mb-3 px-1">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest group-focus-within:text-[#DC143C]">
                     Job Description *
                   </label>
                   <button
                     type="button"
                     onClick={handleGenerateDescription}
                     disabled={generatingDescription}
-                    className="text-xs px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-700 font-semibold rounded transition-colors"
+                    className="text-[10px] px-3 py-1 bg-[#DC143C]/10 hover:bg-[#DC143C]/20 text-[#DC143C] font-bold rounded-lg border border-[#DC143C]/20 transition-all uppercase tracking-widest"
                   >
-                    {generatingDescription ? '⏳ Generating...' : '✨ Generate with AI'}
+                    {generatingDescription ? '⏳ ANALYZING...' : '✨ BUILD WITH AI'}
                   </button>
                 </div>
                 <textarea
                   name="description"
                   value={formData.description || ''}
                   onChange={handleChange}
-                  placeholder="Describe your responsibilities, achievements, and technologies used..."
+                  placeholder="Describe your responsibilities, impact, and technology stack..."
                   rows={4}
-                  className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                    errors.description
-                      ? 'border-red-500 focus:border-red-500'
-                      : 'border-gray-200 focus:border-blue-500'
-                  } focus:outline-none bg-gray-50 resize-none`}
+                  className={`w-full px-5 py-4 rounded-2xl border-2 transition-all font-medium text-sm md:text-base ${errors.description
+                    ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                    : 'border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50'
+                    } focus:outline-none text-white placeholder-gray-700 resize-none`}
                 />
                 {errors.description && (
-                  <p className="mt-2 text-sm text-red-600">⚠️ {errors.description}</p>
+                  <p className="mt-2 text-xs text-red-500 font-medium px-1">{errors.description}</p>
                 )}
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3 mt-6">
+            <div className="flex flex-col sm:flex-row gap-4 mt-10">
               <button
                 type="button"
                 onClick={handleAddExperience}
                 disabled={saving}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all disabled:opacity-50"
+                className="flex-1 relative group overflow-hidden rounded-xl bg-gradient-to-r from-[#DC143C] to-[#8B0000] h-12"
               >
-                {saving ? (
-                  <span className="flex items-center gap-2">
-                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Saving...
-                  </span>
-                ) : editingIndex !== null ? (
-                  '✏️ Update Experience'
-                ) : (
-                  '➕ Add Experience'
-                )}
+                <div className="relative flex items-center justify-center gap-2 text-white font-bold uppercase tracking-widest text-xs">
+                  {saving ? (
+                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  ) : editingIndex !== null ? (
+                    'Update Record'
+                  ) : (
+                    'Add Experience'
+                  )}
+                </div>
               </button>
               {editingIndex !== null && (
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold rounded-lg transition-colors"
+                  className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold uppercase tracking-widest text-xs rounded-xl h-12 transition-all border border-white/5"
                 >
-                  Cancel
+                  Discard Changes
                 </button>
               )}
             </div>
@@ -471,30 +465,31 @@ export default function ExperiencePage() {
 
           {/* Experience List */}
           {experience.length > 0 && (
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-6">Your Experience ({experience.length})</h3>
-              <div className="space-y-4">
+            <div className="space-y-6">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-[0.3em] mb-6 px-1">Experience History ({experience.length})</h3>
+              <div className="grid grid-cols-1 gap-6">
                 {experience.map((exp, index) => (
                   <div
                     key={index}
-                    className={`p-6 rounded-lg border-2 transition-all ${
-                      editingIndex === index
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300 bg-gray-50'
-                    }`}
+                    className={`p-6 rounded-2xl border-2 transition-all relative overflow-hidden group/item ${editingIndex === index
+                      ? 'border-[#DC143C]/50 bg-[#DC143C]/5'
+                      : 'border-white/5 bg-white/5 hover:border-white/10'
+                      }`}
                   >
-                    <div className="flex items-start justify-between gap-4 mb-3">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                       <div className="flex-1">
-                        <h4 className="text-lg font-semibold text-gray-900">{exp.position}</h4>
-                        <p className="text-gray-600">{exp.company}</p>
-                        <p className="text-sm text-gray-500 mt-1">
-                          {exp.startDate} - {exp.endDate}
-                        </p>
+                        <h4 className="text-xl font-bold text-white group-hover/item:text-[#DC143C] transition-colors">{exp.position}</h4>
+                        <p className="text-gray-400 font-medium text-sm">{exp.company}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className="text-[10px] font-bold text-gray-600 bg-white/5 px-2 py-0.5 rounded border border-white/5 uppercase tracking-widest">
+                            {exp.startDate} — {exp.endDate}
+                          </span>
+                        </div>
                       </div>
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleEditExperience(index)}
-                          className="p-2 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg transition-colors"
+                          className="w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 text-white rounded-xl border border-white/5 transition-all"
                           title="Edit"
                         >
                           ✏️
@@ -502,14 +497,14 @@ export default function ExperiencePage() {
                         <button
                           onClick={() => handleDeleteExperience(index)}
                           disabled={saving}
-                          className="p-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-colors disabled:opacity-50"
+                          className="w-10 h-10 flex items-center justify-center bg-red-500/5 hover:bg-red-500/20 text-red-500 rounded-xl border border-red-500/10 transition-all disabled:opacity-30"
                           title="Delete"
                         >
                           🗑️
                         </button>
                       </div>
                     </div>
-                    <p className="text-gray-700">{exp.description}</p>
+                    <p className="text-gray-400 text-sm leading-relaxed font-medium">{exp.description}</p>
                   </div>
                 ))}
               </div>
@@ -517,32 +512,33 @@ export default function ExperiencePage() {
           )}
 
           {experience.length === 0 && editingIndex === null && (
-            <div className="text-center py-12">
-              <p className="text-gray-500 mb-4">No experience entries yet</p>
+            <div className="text-center py-20 opacity-20">
+              <div className="text-5xl mb-4">💼</div>
+              <p className="text-sm font-bold uppercase tracking-widest text-gray-500 transition-colors">No professional history recorded</p>
             </div>
           )}
         </div>
 
         {/* Navigation */}
-        <div className="mt-8 flex gap-4">
+        <div className="mt-10 flex flex-col sm:flex-row gap-4">
           <Link
             href={`/resume/${resumeId}/projects`}
-            className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-3 rounded-lg transition-colors text-center"
+            className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold uppercase tracking-widest text-xs h-14 flex items-center justify-center rounded-2xl transition-all border border-white/5"
           >
             ← Previous: Projects
           </Link>
           <Link
             href={`/resume/${resumeId}/achievements`}
-            className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-lg transition-all text-center"
+            className="flex-1 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold uppercase tracking-widest text-xs h-14 flex items-center justify-center rounded-2xl transition-all shadow-xl shadow-[#DC143C]/20"
           >
             Next: Achievements →
           </Link>
         </div>
 
         {/* Info Box */}
-        <div className="mt-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-          <p className="text-sm text-blue-800">
-            <span className="font-semibold">💡 Tip:</span> Use the AI generator to create compelling job descriptions. Include key achievements and responsibilities in each role.
+        <div className="mt-10 text-center opacity-40">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+            Strategy: Utilize AI generation for high-impact descriptions that highlight your top results.
           </p>
         </div>
       </div>

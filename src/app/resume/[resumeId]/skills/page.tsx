@@ -148,10 +148,10 @@ export default function SkillsPage() {
 
       if (response.data.success) {
         const generatedSkills = response.data.data?.skills || [];
-        
+
         // Merge with existing skills (avoid duplicates)
         const mergedSkills = Array.from(new Set([...skills, ...generatedSkills]));
-        
+
         const updateResponse = await axios.patch(
           `/api/resume/${resumeId}`,
           { skills: mergedSkills },
@@ -192,52 +192,50 @@ export default function SkillsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-[#0A0A0A] text-white relative overflow-x-hidden">
+      {/* Background Accents */}
+      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-[#DC143C]/10 to-transparent -z-0 pointer-events-none"></div>
+
       {/* Navbar */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-2">
-              ← Back to Dashboard
-            </Link>
-            <h1 className="text-xl font-bold text-gray-900">Skills</h1>
-            <div className="w-24"></div>
+      <nav className="glass sticky top-0 z-50 border-b border-white/5">
+        <div className="max-w-5xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+          <Link href="/dashboard" className="group flex items-center gap-2 text-gray-400 hover:text-white transition-all font-bold uppercase tracking-widest text-[10px]">
+            <span className="group-hover:-translate-x-1 transition-transform">←</span> Dashboard
+          </Link>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#DC143C] rounded-full animate-pulse"></div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Step 3: Skillset</span>
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-16 relative z-10">
+
         {/* Page Header */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Skills</h2>
-          <p className="text-gray-600">Add your technical and professional skills</p>
+        <div className="mb-10 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">Professional Skills</h2>
+          <p className="text-gray-500 text-sm md:text-base font-medium">Showcase your technical expertise and core competencies.</p>
         </div>
 
         {/* Main Card */}
-        <div className="bg-white rounded-xl shadow-lg p-8 md:p-10">
-          
+        <div className="glass rounded-[2rem] p-6 md:p-10 border border-white/5 shadow-2xl relative overflow-hidden">
+
           {/* AI Generation Section */}
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200 rounded-lg p-6 mb-8">
-            <div className="flex items-center justify-between gap-4">
+          <div className="bg-gradient-to-br from-[#DC143C]/10 to-[#8B0000]/5 border border-[#DC143C]/20 rounded-2xl p-6 md:p-8 mb-10 overflow-hidden relative group/ai">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#DC143C]/5 blur-3xl rounded-full -z-10 group-hover/ai:bg-[#DC143C]/10 transition-colors"></div>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-1">✨ AI-Powered Skill Generation</h3>
-                <p className="text-gray-600 text-sm">Generate skills based on your job title and experience level</p>
+                <h3 className="text-xl font-bold text-white mb-1">AI-Powered Generation</h3>
+                <p className="text-gray-400 text-sm font-medium">Extract skills automatically based on your role and industry.</p>
               </div>
               <button
                 onClick={handleGenerateSkills}
                 disabled={generatingSkills}
-                className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-lg transition-all disabled:opacity-50 whitespace-nowrap"
+                className="px-6 py-3 bg-white text-black hover:bg-[#F5F0E8] font-bold rounded-xl transition-all disabled:opacity-50 whitespace-nowrap uppercase tracking-widest text-xs flex items-center justify-center gap-2"
               >
                 {generatingSkills ? (
-                  <span className="flex items-center gap-2">
-                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Generating...
-                  </span>
+                  <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
                 ) : (
                   '🚀 Generate with AI'
                 )}
@@ -246,28 +244,25 @@ export default function SkillsPage() {
           </div>
 
           {/* Add Skill Form */}
-          <div className="border-b border-gray-200 pb-8 mb-8">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Add Skill Manually</h3>
-            <form onSubmit={handleAddSkill} className="flex gap-3">
+          <div className="border-b border-white/5 pb-10 mb-10">
+            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-[0.3em] mb-6 px-1">Manual Entry</h3>
+            <form onSubmit={handleAddSkill} className="flex flex-col sm:flex-row gap-4">
               <input
                 type="text"
                 value={newSkill}
                 onChange={(e) => setNewSkill(e.target.value)}
-                placeholder="e.g., React, Python, Project Management..."
-                className="flex-1 px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:outline-none bg-gray-50"
+                placeholder="e.g. React, Python, AWS, DevOps..."
+                className="flex-1 px-5 py-3 rounded-xl border-2 border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50 focus:outline-none text-white font-medium text-sm md:text-base placeholder-gray-700 transition-all"
               />
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all disabled:opacity-50"
+                className="px-8 py-3 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold rounded-xl transition-all disabled:opacity-50 uppercase tracking-widest text-xs flex items-center justify-center h-14"
               >
                 {saving ? (
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+                  <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
                 ) : (
-                  '➕ Add'
+                  'Add Skill'
                 )}
               </button>
             </form>
@@ -276,18 +271,18 @@ export default function SkillsPage() {
           {/* Skills Display */}
           {skills.length > 0 ? (
             <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-6">Your Skills ({skills.length})</h3>
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-[0.3em] mb-6 px-1">Identified Skills ({skills.length})</h3>
               <div className="flex flex-wrap gap-3">
                 {skills.map((skill, index) => (
                   <div
                     key={index}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 border-2 border-blue-300 rounded-full group hover:shadow-md transition-all"
+                    className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/5 hover:border-[#DC143C]/30 rounded-full group transition-all"
                   >
-                    <span className="text-gray-900 font-medium">{skill}</span>
+                    <span className="text-gray-300 font-bold text-xs uppercase tracking-wider">{skill}</span>
                     <button
                       onClick={() => handleDeleteSkill(skill)}
                       disabled={saving}
-                      className="text-gray-500 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                      className="text-gray-600 hover:text-red-500 transition-colors"
                       title="Remove skill"
                     >
                       ✕
@@ -297,33 +292,33 @@ export default function SkillsPage() {
               </div>
             </div>
           ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-500 mb-4">No skills added yet</p>
-              <p className="text-gray-400 text-sm">Add skills manually or generate them with AI</p>
+            <div className="text-center py-20 opacity-20">
+              <div className="text-5xl mb-4">🛠️</div>
+              <p className="text-sm font-bold uppercase tracking-widest text-gray-500 transition-colors">Skill list remains empty</p>
             </div>
           )}
         </div>
 
         {/* Navigation */}
-        <div className="mt-8 flex gap-4">
+        <div className="mt-10 flex flex-col sm:flex-row gap-4">
           <Link
             href={`/resume/${resumeId}/education`}
-            className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-3 rounded-lg transition-colors text-center"
+            className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold uppercase tracking-widest text-xs h-14 flex items-center justify-center rounded-2xl transition-all border border-white/5"
           >
             ← Previous: Education
           </Link>
           <Link
             href={`/resume/${resumeId}/projects`}
-            className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-lg transition-all text-center"
+            className="flex-1 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold uppercase tracking-widest text-xs h-14 flex items-center justify-center rounded-2xl transition-all shadow-xl shadow-[#DC143C]/20"
           >
             Next: Projects →
           </Link>
         </div>
 
         {/* Info Box */}
-        <div className="mt-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-          <p className="text-sm text-blue-800">
-            <span className="font-semibold">💡 Tip:</span> Include both technical skills (programming languages, tools) and soft skills (communication, leadership).
+        <div className="mt-10 text-center opacity-40">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+            Tip: Combine hard technical skills with soft skills like leadership and problem-solving for a well-rounded profile.
           </p>
         </div>
       </div>

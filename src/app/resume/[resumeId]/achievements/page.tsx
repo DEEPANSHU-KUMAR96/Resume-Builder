@@ -54,7 +54,7 @@ export default function AchievementsPage() {
 
   const handleAddItem = () => {
     if (!inputValue.trim()) return;
-    
+
     // Check for duplicates
     if (achievements.includes(inputValue.trim())) {
       toast.error('This item is already in your list');
@@ -100,89 +100,114 @@ export default function AchievementsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-16">
-      <div className="max-w-3xl mx-auto px-4">
-        
-        {/* Navigation Breadcrumb */}
-        <div className="mb-8 flex items-center gap-2 text-sm font-bold text-gray-400">
-           <span>Resume</span>
-           <span>/</span>
-           <span className="text-gray-900">Achievements</span>
+    <div className="min-h-screen bg-[#0A0A0A] text-white relative overflow-x-hidden">
+      {/* Background Accents */}
+      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-[#DC143C]/10 to-transparent -z-0 pointer-events-none"></div>
+
+      {/* Navbar */}
+      <nav className="glass sticky top-0 z-50 border-b border-white/5">
+        <div className="max-w-5xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+          <Link href="/dashboard" className="group flex items-center gap-2 text-gray-400 hover:text-white transition-all font-bold uppercase tracking-widest text-[10px]">
+            <span className="group-hover:-translate-x-1 transition-transform">←</span> Dashboard
+          </Link>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#DC143C] rounded-full animate-pulse"></div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Step 5: Achievements</span>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-20 relative z-10">
+
+        {/* Page Header */}
+        <div className="mb-14 text-center">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight uppercase tracking-wider">Honors & Accolades</h2>
+          <p className="text-gray-500 text-sm md:text-base font-medium max-w-2xl mx-auto">
+            Document your professional certificates, awards, and significant industry milestones.
+          </p>
         </div>
 
-        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100/50 p-10 border border-indigo-50">
-          <div className="mb-10">
-            <h2 className="text-4xl font-black text-gray-900 tracking-tight mb-3">Honors & Accolades</h2>
-            <p className="text-gray-500 font-medium">List your certifications, awards, and major milestones.</p>
-          </div>
-          
+        <div className="glass rounded-[2rem] p-6 md:p-10 border border-white/5 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#DC143C]/5 blur-3xl rounded-full"></div>
+
           {/* Input Section */}
-          <div className="flex flex-col md:flex-row gap-4 mb-10">
-            <input 
-              type="text" 
-              value={inputValue} 
+          <div className="flex flex-col md:flex-row gap-4 mb-12 border-b border-white/5 pb-12">
+            <input
+              type="text"
+              value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="e.g. AWS Certified Cloud Practitioner"
-              className="flex-1 p-5 rounded-2xl border-2 border-gray-50 bg-gray-50/50 focus:bg-white focus:border-indigo-500/20 focus:ring-0 outline-none transition-all text-gray-700 font-medium"
+              placeholder="e.g. AWS Certified Solutions Architect"
+              className="flex-1 px-5 py-4 rounded-2xl border-2 border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50 outline-none transition-all text-white font-medium text-sm md:text-base placeholder-gray-700"
               onKeyPress={(e) => e.key === 'Enter' && handleAddItem()}
             />
-            <button 
+            <button
               onClick={handleAddItem}
-              className="px-8 py-5 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 transition-all active:scale-95"
+              className="px-10 py-4 bg-white text-black hover:bg-[#F5F0E8] font-bold rounded-2xl transition-all active:scale-95 uppercase tracking-widest text-xs h-14 flex items-center justify-center"
             >
-              Add Item
+              Add Achievement
             </button>
           </div>
 
           {/* List Display */}
-          <div className="space-y-4 mb-12">
+          <div className="space-y-6 mb-12">
+            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-[0.3em] mb-6 px-1">Achievements List ({achievements.length})</h3>
+
             {achievements.map((item, i) => (
-              <div 
-                key={i} 
-                className="group flex justify-between items-center p-5 bg-white rounded-2xl border border-gray-100 hover:border-indigo-200 hover:shadow-md transition-all"
+              <div
+                key={i}
+                className="group flex justify-between items-center p-6 bg-white/5 rounded-2xl border border-white/5 hover:border-[#DC143C]/30 transition-all relative overflow-hidden"
               >
-                <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-xl">🏆</div>
-                    <span className="font-bold text-gray-700">{item}</span>
+                <div className="absolute top-0 left-0 w-1 h-full bg-[#DC143C]/20"></div>
+                <div className="flex items-center gap-5">
+                  <div className="w-10 h-10 rounded-xl bg-[#DC143C]/10 border border-[#DC143C]/20 flex items-center justify-center text-lg shadow-inner">
+                    <span className="text-[#DC143C]">🏆</span>
+                  </div>
+                  <span className="font-bold text-gray-200 text-sm md:text-base">{item}</span>
                 </div>
-                <button 
-                    onClick={() => handleRemoveItem(i)} 
-                    className="w-10 h-10 rounded-xl flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all font-black"
+                <button
+                  onClick={() => handleRemoveItem(i)}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-gray-600 hover:text-white hover:bg-white/5 transition-all font-black text-xs"
                 >
-                    ✕
+                  ✕
                 </button>
               </div>
             ))}
-            
+
             {achievements.length === 0 && (
-              <div className="text-center py-16 bg-gray-50/50 rounded-[2rem] border-2 border-dashed border-gray-100">
-                <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Your trophy case is empty</p>
-                <p className="text-gray-300 text-sm mt-1">Start adding your achievements above.</p>
+              <div className="text-center py-24 bg-white/2 border-2 border-dashed border-white/5 rounded-[2rem] opacity-20">
+                <div className="text-5xl mb-4">🎖️</div>
+                <p className="text-sm font-bold uppercase tracking-widest text-gray-400">No achievements added yet</p>
+                <p className="text-xs text-gray-500 mt-2">Add your certifications or honors to showcase your expertise.</p>
               </div>
             )}
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-6 border-t border-gray-50 pt-10">
-            <Link 
-              href={`/resume/${resumeId}/experience`} 
-              className="order-2 sm:order-1 text-gray-400 font-black hover:text-gray-900 transition-all uppercase tracking-widest text-xs"
+          {/* Navigation Section */}
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-6 border-t border-white/5 pt-10 relative z-10">
+            <Link
+              href={`/resume/${resumeId}/experience`}
+              className="order-2 sm:order-1 text-gray-500 font-bold hover:text-white transition-all uppercase tracking-widest text-[10px]"
             >
-              ← Previous: Experience
+              ← Previous: Industry Experience
             </Link>
-            <button 
-              onClick={handleSave} 
-              disabled={saving} 
-              className="order-1 sm:order-2 w-full sm:w-auto px-12 py-5 bg-gray-900 text-white font-black rounded-2xl hover:bg-indigo-600 transition-all shadow-xl hover:shadow-indigo-100 active:scale-95 disabled:opacity-50"
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="order-1 sm:order-2 w-full sm:w-auto px-12 h-14 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold rounded-2xl hover:shadow-xl hover:shadow-[#DC143C]/20 transition-all active:scale-95 disabled:opacity-50 uppercase tracking-widest text-xs flex items-center justify-center gap-3"
             >
-              {saving ? 'Saving...' : 'Save & Continue →'}
+              {saving ? (
+                <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <>Continue to Summary <span className="text-lg">→</span></>
+              )}
             </button>
           </div>
         </div>
-        
-        <div className="mt-8 text-center">
-            <p className="text-xs text-gray-400 font-medium">
-                Tip: Including certifications from recognized providers (AWS, Google, Coursera) significantly boosts ATS scoring.
-            </p>
+
+        <div className="mt-12 text-center opacity-40">
+          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] max-w-xl mx-auto leading-relaxed">
+            Strategy: Document professional licenses and international certifications to increase index visibility in automated ATS evaluations.
+          </p>
         </div>
       </div>
     </div>

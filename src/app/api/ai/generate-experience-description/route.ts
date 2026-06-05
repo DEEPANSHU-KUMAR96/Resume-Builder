@@ -54,10 +54,12 @@ STRICT RULES:
                 .filter((line) => line.startsWith("-"));
         }
 
+        const description = (experienceDescription as string[]).join("\n");
+
         return NextResponse.json<ApiResponse>({
             success: true,
             message: "Experience description created",
-            data: { experienceDescription }
+            data: { description }
         }, { status: 201 });
 
     } catch (error) {

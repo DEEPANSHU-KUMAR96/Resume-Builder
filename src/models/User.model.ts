@@ -34,16 +34,16 @@ const userSchema = new mongoose.Schema<UserDocument>({
 
 }, { timestamps: true })
 
-userSchema.pre('save',  function () : void {
-    if(!this.isModified('password')) return 
+userSchema.pre('save', function (): void {
+    if (!this.isModified('password')) return
     this.password = bcrypt.hashSync(this.password, 10)
-   
+
 })
 
 userSchema.methods.comparePassword = function (candidatePassword: string): boolean {
     return bcrypt.compareSync(candidatePassword, this.password)
 }
 
-const UserModel = mongoose.model('User', userSchema)
+const UserModel = mongoose.models.User || mongoose.model('User', userSchema)
 
 export default UserModel;

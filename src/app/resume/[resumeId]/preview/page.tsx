@@ -32,7 +32,7 @@ export default function PreviewPage() {
   const [resume, setResume] = useState<IResume | null>(null);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
-  
+
   // ATS AI State
   const [atsScore, setAtsScore] = useState<IAtsScore | null>(null);
   const [scanning, setScanning] = useState(false);
@@ -65,35 +65,114 @@ export default function PreviewPage() {
   /**
    * handleDownloadPDF
    * Uses html2canvas to capture the resume element and jsPDF to save it.
+   * Supports multi-page resumes by slicing the canvas across A4 pages.
    */
   const handleDownloadPDF = async () => {
     if (!resumeRef.current) return;
-    
+
     try {
       setDownloading(true);
-      toast.loading('💾 Preparing your professional PDF...');
-      
+      toast.loading('Preparing your PDF...', { id: 'pdf-download' });
+
       const element = resumeRef.current;
+      const linkMetadata: { url: string; x: number; y: number; w: number; h: number }[] = [];
+
       const canvas = await html2canvas(element, {
-        scale: 2, // Better quality
+        scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
+        onclone: (clonedDoc) => {
+          // 1. Fix modern colors
+          const elements = clonedDoc.getElementsByTagName('*');
+          for (let i = 0; i < elements.length; i++) {
+            const el = elements[i] as HTMLElement;
+            const style = window.getComputedStyle(el);
+            if (style.color && (style.color.includes('lab') || style.color.includes('oklch') || style.color.includes('oklab'))) {
+              el.style.color = 'inherit';
+            }
+            if (style.backgroundColor && (style.backgroundColor.includes('lab') || style.backgroundColor.includes('oklch') || style.backgroundColor.includes('oklab'))) {
+              el.style.backgroundColor = 'transparent';
+            }
+            if (style.borderColor && (style.borderColor.includes('lab') || style.borderColor.includes('oklch') || style.borderColor.includes('oklab'))) {
+              el.style.borderColor = 'transparent';
+            }
+          }
+
+          // 2. Track link positions
+          const container = clonedDoc.getElementById('resume-pdf-content');
+          if (!container) return;
+          const containerRect = container.getBoundingClientRect();
+          const scaleFactor = 210 / containerRect.width;
+
+          const links = clonedDoc.querySelectorAll('a');
+          links.forEach(a => {
+            const rect = a.getBoundingClientRect();
+            linkMetadata.push({
+              url: a.href,
+              x: (rect.left - containerRect.left) * scaleFactor,
+              y: (rect.top - containerRect.top) * scaleFactor,
+              w: rect.width * scaleFactor,
+              h: rect.height * scaleFactor
+            });
+          });
+        }
       });
-      
+
       const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`${resume?.personalInfo?.fullname || 'Resume'}_AI_Builder.pdf`);
-      
-      toast.dismiss();
-      toast.success('✅ Downloaded successfully!');
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+      let currentPage = 1;
+
+      // Helper to add links for a specific page
+      const addLinksToPage = (pageNum: number) => {
+        const pageTop = (pageNum - 1) * pdfHeight;
+        const pageBottom = pageNum * pdfHeight;
+
+        linkMetadata.forEach(link => {
+          if (link.y >= pageTop && link.y < pageBottom) {
+            // Adjust Y coordinate relative to the current page top
+            pdf.link(link.x, link.y - pageTop, link.w, link.h, { url: link.url });
+          }
+        });
+      };
+
+      // Add first page
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      addLinksToPage(1);
+      heightLeft -= pdfHeight;
+
+      // Add additional pages
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        currentPage++;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        addLinksToPage(currentPage);
+        heightLeft -= pdfHeight;
+      }
+
+      pdf.save(`${resume?.personalInfo?.fullname || 'Resume'}.pdf`);
+
+      toast.dismiss('pdf-download');
+      toast.success('PDF Downloaded!');
     } catch (error) {
-      toast.dismiss();
-      toast.error('PDF generation failed. Use browser print (Ctrl+P) as fallback.');
+      console.error('PDF generation error:', error);
+      toast.dismiss('pdf-download');
+      toast.error('PDF generation failed.');
     } finally {
       setDownloading(false);
     }
@@ -108,9 +187,8 @@ export default function PreviewPage() {
 
     try {
       setScanning(true);
-      toast.loading('🔍 AI is analyzing your resume for ATS compatibility...');
+      toast.loading('AI is analyzing your resume...', { id: 'ats-scan' });
 
-      // Construct a string representation for AI analysis
       const resumeText = `
         Full Name: ${resume.personalInfo?.fullname}
         Summary: ${resume.summary}
@@ -124,11 +202,11 @@ export default function PreviewPage() {
 
       if (response.data.success) {
         setAtsScore(response.data.data.atsScore);
-        toast.dismiss();
-        toast.success('📈 ATS analysis complete!');
+        toast.dismiss('ats-scan');
+        toast.success('ATS analysis complete!');
       }
     } catch (error) {
-      toast.dismiss();
+      toast.dismiss('ats-scan');
       toast.error('AI scanning failed. Please try again.');
     } finally {
       setScanning(false);
@@ -137,213 +215,346 @@ export default function PreviewPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]">
         <div className="text-center">
-            <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-500 font-bold animate-pulse">Assembling your final document...</p>
+          <div className="w-16 h-16 border-4 border-[#DC143C]/20 border-t-[#DC143C] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500 font-bold animate-pulse text-sm">Assembling your document...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 pb-20">
-      {/* Dynamic Navbar */}
-      <nav className="bg-white/90 backdrop-blur-xl border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href={`/resume/${resumeId}/summary`} className="text-gray-500 hover:text-indigo-600 font-bold flex items-center gap-2 group">
-            <span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Editor
-          </Link>
-          
-          <div className="hidden md:flex items-center gap-2 px-4 py-1.5 bg-gray-100 rounded-full">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-xs font-bold text-gray-500 uppercase tracking-tighter">Draft Saved & Finalized</span>
-          </div>
+    <div className="min-h-screen bg-[#0A0A0A] pb-20 relative overflow-x-hidden">
+      {/* Background Accents */}
+      <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-[#DC143C]/5 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-[30%] h-[50%] bg-[#DC143C]/5 blur-[120px] rounded-full pointer-events-none"></div>
 
-          <div className="flex gap-3">
-            <button 
-              onClick={handleRunAtsScan}
-              disabled={scanning}
-              className="px-5 py-2 bg-purple-50 text-purple-700 font-bold rounded-xl border border-purple-100 hover:bg-purple-100 transition-all flex items-center gap-2"
-            >
-              {scanning ? '...' : <span>💎 Run ATS Scan</span>}
-            </button>
-            <button 
-              onClick={handleDownloadPDF}
-              disabled={downloading}
-              className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center gap-2"
-            >
-              {downloading ? '...' : <span>📥 Download PDF</span>}
-            </button>
+      {/* Navbar */}
+      <nav className="glass sticky top-0 z-50 border-b border-white/5 backdrop-blur-2xl">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between gap-3">
+          <Link href={`/resume/${resumeId}/summary`} className="flex items-center gap-2 text-gray-500 hover:text-white transition-all font-bold group shrink-0">
+            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[#DC143C]/20 transition-all">
+              <span className="text-lg group-hover:-translate-x-0.5 transition-transform">←</span>
+            </div>
+            <span className="uppercase tracking-[0.15em] text-[9px] md:text-[10px] hidden sm:inline">Back to Editor</span>
+          </Link>
+
+          <div className="flex items-center gap-2 md:gap-4">
+            <div className="hidden lg:flex items-center gap-2 px-4 py-1.5 bg-white/5 rounded-full border border-white/5">
+              <div className="w-1.5 h-1.5 bg-[#DC143C] rounded-full animate-pulse shadow-[0_0_8px_#DC143C]"></div>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Resume Ready</span>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={handleRunAtsScan}
+                disabled={scanning}
+                className="px-3 md:px-5 h-10 md:h-11 glass text-white font-bold rounded-xl border border-white/5 hover:border-[#DC143C]/50 transition-all flex items-center gap-2 text-[9px] md:text-[10px] uppercase tracking-widest disabled:opacity-50"
+              >
+                {scanning ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div> : <span className="text-[#DC143C]">Scan</span>}
+              </button>
+              <button
+                onClick={handleDownloadPDF}
+                disabled={downloading}
+                className="px-4 md:px-6 h-10 md:h-11 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-extrabold rounded-xl hover:opacity-90 transition-all flex items-center gap-2 text-[9px] md:text-[10px] uppercase tracking-widest shadow-xl shadow-[#DC143C]/20 disabled:opacity-50"
+              >
+                {downloading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div> : <span>Export PDF</span>}
+              </button>
+            </div>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 mt-8 flex flex-col xl:flex-row gap-8 items-start">
-        
-        {/* Left Side: Professional Resume Document (The Preview) */}
-        <div className="flex-1 w-full flex justify-center">
-          <div 
+      <div className="max-w-7xl mx-auto px-4 md:px-8 mt-8 md:mt-12 flex flex-col xl:flex-row gap-8 md:gap-12 items-start relative z-10">
+
+        {/* Document Surface */}
+        <div className="flex-1 w-full flex justify-center overflow-x-auto pb-10">
+          <div
             ref={resumeRef}
-            className="w-full max-w-[800px] bg-white shadow-[0_0_50px_rgba(0,0,0,0.06)] min-h-[1100px] p-[20mm] md:p-[30mm] text-gray-800"
-            style={{ fontFamily: "'Inter', sans-serif" }}
+            id="resume-pdf-content"
+            className="w-full max-w-[210mm] bg-white shadow-[0_40px_100px_rgba(0,0,0,0.5)] p-6 sm:p-10 md:p-[20mm] text-black shrink-0 relative"
+            style={{
+              fontFamily: "'Inter', 'Helvetica', 'Arial', sans-serif",
+              color: '#1a1a1a',
+              lineHeight: '1.5'
+            }}
           >
-            {/* Header */}
-            <header className="border-b-2 border-indigo-600 pb-8 mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-end">
-              <div>
-                <h1 className="text-5xl font-black text-gray-900 tracking-tight mb-2">
-                  {resume?.personalInfo?.fullname || 'Your Name'}
-                </h1>
-                <div className="flex flex-wrap gap-4 text-gray-500 font-medium text-sm">
-                  <span>{resume?.personalInfo?.email}</span>
-                  <span>•</span>
-                  <span>{resume?.personalInfo?.mobile}</span>
-                  {resume?.personalInfo?.location && (
-                    <><span>•</span><span>{resume?.personalInfo?.location}</span></>
+            {/* Professional Header */}
+            <header className="text-center mb-10 pb-8" style={{ borderBottom: '2px solid #1a1a1a' }}>
+              <h1 style={{
+                fontSize: '32px',
+                fontWeight: '800',
+                color: '#000000',
+                textTransform: 'uppercase',
+                letterSpacing: '-0.02em',
+                marginBottom: '8px',
+                lineHeight: '1'
+              }}>
+                {resume?.personalInfo?.fullname || 'Your Name'}
+              </h1>
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                gap: '12px',
+                fontSize: '12px',
+                fontWeight: '600',
+                color: '#4a4a4a',
+                letterSpacing: '0.05em'
+              }}>
+                {resume?.personalInfo?.email && <a href={`mailto:${resume.personalInfo.email}`} style={{ color: '#4a4a4a', textDecoration: 'none', cursor: 'pointer', zIndex: 10 }}>{resume.personalInfo.email}</a>}
+                {resume?.personalInfo?.mobile && <span>| {resume.personalInfo.mobile}</span>}
+                {resume?.personalInfo?.location && <span>| {resume.personalInfo.location}</span>}
+              </div>
+              {(resume?.personalInfo?.linkedin || resume?.personalInfo?.github) && (
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: '16px',
+                  marginTop: '8px',
+                  fontSize: '11px',
+                  fontWeight: '700',
+                  color: '#1a1a1a',
+                  textTransform: 'uppercase'
+                }}>
+                  {resume?.personalInfo?.linkedin && (
+                    <a href={resume.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" style={{ color: '#1a1a1a', textDecoration: 'underline', cursor: 'pointer', zIndex: 10 }}>LinkedIn</a>
+                  )}
+                  {resume?.personalInfo?.github && (
+                    <a href={resume.personalInfo.github} target="_blank" rel="noopener noreferrer" style={{ color: '#1a1a1a', textDecoration: 'underline', cursor: 'pointer', zIndex: 10 }}>GitHub</a>
                   )}
                 </div>
-              </div>
-              <div className="flex gap-3 mt-4 md:mt-0">
-                {resume?.personalInfo?.linkedin && (
-                    <span className="text-[10px] font-bold px-3 py-1 bg-gray-100 rounded text-gray-500">LinkedIn</span>
-                )}
-                {resume?.personalInfo?.github && (
-                    <span className="text-[10px] font-bold px-3 py-1 bg-gray-100 rounded text-gray-500">GitHub</span>
-                )}
-              </div>
+              )}
             </header>
 
-            {/* Summary */}
-            {resume?.summary && (
-              <section className="mb-10">
-                <h2 className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-3">Professional Summary</h2>
-                <p className="text-gray-700 leading-relaxed font-medium">
-                  {resume.summary}
-                </p>
-              </section>
-            )}
+            {/* Content Sections */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+              {/* Summary */}
+              {resume?.summary && (
+                <section>
+                  <h2 style={{
+                    fontSize: '14px',
+                    fontWeight: '800',
+                    color: '#000000',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    borderBottom: '1px solid #1a1a1a',
+                    paddingBottom: '4px',
+                    marginBottom: '12px'
+                  }}>
+                    Professional Summary
+                  </h2>
+                  <p style={{ fontSize: '13px', color: '#1a1a1a', textAlign: 'justify' }}>
+                    {resume.summary}
+                  </p>
+                </section>
+              )}
 
-            {/* Experience */}
-            {resume?.workExperience && resume.workExperience.length > 0 && (
-              <section className="mb-10">
-                <h2 className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-6">Work Experience</h2>
-                <div className="space-y-8">
-                  {resume.workExperience.map((exp, i) => (
-                    <div key={i}>
-                      <div className="flex justify-between items-start mb-1">
-                        <h3 className="font-bold text-gray-900 text-lg">{exp.position}</h3>
-                        <span className="text-sm font-bold text-gray-400">{exp.startDate} - {exp.endDate}</span>
+              {/* Experience */}
+              {resume?.workExperience && resume.workExperience.length > 0 && (
+                <section>
+                  <h2 style={{
+                    fontSize: '14px',
+                    fontWeight: '800',
+                    color: '#000000',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    borderBottom: '1px solid #1a1a1a',
+                    paddingBottom: '4px',
+                    marginBottom: '16px'
+                  }}>
+                    Professional Experience
+                  </h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {resume.workExperience.map((exp, i) => (
+                      <div key={i}>
+                        <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'baseline', marginBottom: '4px' }}>
+                          <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#000000', flex: 1 }}>{exp.position}</h3>
+                          <span style={{ fontSize: '11px', fontWeight: '700', color: '#4a4a4a', textTransform: 'uppercase' }}>
+                            {exp.startDate} — {exp.endDate}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '13px', fontWeight: '700', color: '#1a1a1a', fontStyle: 'italic', marginBottom: '8px' }}>
+                          {exp.company}
+                        </div>
+                        <p style={{ fontSize: '12px', color: '#333333', whiteSpace: 'pre-wrap' }}>
+                          {exp.description}
+                        </p>
                       </div>
-                      <div className="font-bold text-indigo-500 mb-2">{exp.company}</div>
-                      <p className="text-gray-600 text-sm leading-relaxed">{exp.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
+                    ))}
+                  </div>
+                </section>
+              )}
 
-            {/* Projects */}
-            {resume?.projects && resume.projects.length > 0 && (
-              <section className="mb-10">
-                <h2 className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-6">Key Projects</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {resume.projects.map((proj, i) => (
-                    <div key={i} className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                      <h3 className="font-black text-gray-900 mb-1">{proj.title}</h3>
-                      <div className="flex flex-wrap gap-1 mb-2">
-                        {proj.techStack?.map((t, idx) => (
-                            <span key={idx} className="text-[9px] font-bold px-2 py-0.5 bg-white text-gray-500 border rounded">
-                                {t}
-                            </span>
-                        ))}
+              {/* Skills Section - Single Column Comma Separated */}
+              {resume?.skills && resume.skills.length > 0 && (
+                <section>
+                  <h2 style={{
+                    fontSize: '14px',
+                    fontWeight: '800',
+                    color: '#000000',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    borderBottom: '1px solid #1a1a1a',
+                    paddingBottom: '4px',
+                    marginBottom: '12px'
+                  }}>
+                    Technical Skills
+                  </h2>
+                  <p style={{ fontSize: '13px', color: '#1a1a1a', fontWeight: '500' }}>
+                    {resume.skills.join(' • ')}
+                  </p>
+                </section>
+              )}
+
+              {/* Projects */}
+              {resume?.projects && resume.projects.length > 0 && (
+                <section>
+                  <h2 style={{
+                    fontSize: '14px',
+                    fontWeight: '800',
+                    color: '#000000',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    borderBottom: '1px solid #1a1a1a',
+                    paddingBottom: '4px',
+                    marginBottom: '16px'
+                  }}>
+                    Key Projects
+                  </h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {resume.projects.map((proj, i) => (
+                      <div key={i}>
+                        <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'baseline', marginBottom: '4px' }}>
+                          <h3 style={{ fontSize: '14px', fontWeight: '800', color: '#000000', flex: 1 }}>{proj.title}</h3>
+                          <div style={{ display: 'flex', gap: '12px', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase' }}>
+                            {proj.githubUrl && (
+                              <a href={proj.githubUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1a1a1a', textDecoration: 'underline', cursor: 'pointer', zIndex: 10 }}>GitHub</a>
+                            )}
+                            {proj.liveUrl && (
+                              <a href={proj.liveUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1a1a1a', textDecoration: 'underline', cursor: 'pointer', zIndex: 10 }}>Live Demo</a>
+                            )}
+                          </div>
+                        </div>
+                        <div style={{ fontSize: '11px', fontWeight: '700', color: '#4a4a4a', marginBottom: '6px' }}>
+                          {proj.techStack?.join(', ')}
+                        </div>
+                        <p style={{ fontSize: '12px', color: '#333333', textAlign: 'justify' }}>{proj.description}</p>
                       </div>
-                      <p className="text-gray-600 text-[13px] leading-relaxed line-clamp-3">{proj.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
+                    ))}
+                  </div>
+                </section>
+              )}
 
-            {/* Skills */}
-            {resume?.skills && resume.skills.length > 0 && (
-              <section className="mb-10">
-                <h2 className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-4">Expertise & Skills</h2>
-                <div className="flex flex-wrap gap-2">
-                  {resume.skills.map((skill, i) => (
-                    <span key={i} className="px-4 py-1.5 bg-gray-900 text-white text-xs font-bold rounded-lg tracking-wide">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Education */}
-            {resume?.education && resume.education.length > 0 && (
-              <section>
-                <h2 className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-6">Education</h2>
-                <div className="space-y-4">
-                  {resume.education.map((edu, i) => (
-                    <div key={i} className="flex justify-between">
-                      <div>
-                        <div className="font-bold text-gray-900">{edu.degree}</div>
-                        <div className="text-sm text-gray-500 font-medium">{edu.institution}</div>
+              {/* Education */}
+              {resume?.education && resume.education.length > 0 && (
+                <section>
+                  <h2 style={{
+                    fontSize: '14px',
+                    fontWeight: '800',
+                    color: '#000000',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    borderBottom: '1px solid #1a1a1a',
+                    paddingBottom: '4px',
+                    marginBottom: '16px'
+                  }}>
+                    Education
+                  </h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {resume.education.map((edu, i) => (
+                      <div key={i} style={{ display: 'flex', justifyContent: 'between', alignItems: 'start' }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: '14px', fontWeight: '800', color: '#000000' }}>{edu.degree}</div>
+                          <div style={{ fontSize: '12px', fontWeight: '600', color: '#4a4a4a' }}>{edu.institution}</div>
+                        </div>
+                        <span style={{ fontSize: '11px', fontWeight: '700', color: '#4a4a4a' }}>{edu.startDate} — {edu.endDate}</span>
                       </div>
-                      <div className="text-sm font-bold text-gray-400">{edu.startDate} - {edu.endDate}</div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Achievements & Certifications */}
+              {resume?.certifications && resume.certifications.length > 0 && (
+                <section>
+                  <h2 style={{
+                    fontSize: '14px',
+                    fontWeight: '800',
+                    color: '#000000',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    borderBottom: '1px solid #1a1a1a',
+                    paddingBottom: '4px',
+                    marginBottom: '12px'
+                  }}>
+                    Achievements & Certifications
+                  </h2>
+                  <ul style={{ paddingLeft: '18px', margin: '0' }}>
+                    {resume.certifications.map((cert, i) => (
+                      <li key={i} style={{ fontSize: '13px', color: '#1a1a1a', marginBottom: '4px' }}>
+                        {cert}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Right Side: AI Analytics Sidebar */}
-        <aside className="w-full xl:w-96 flex flex-col gap-6">
-          
+        {/* Sidebar */}
+        <aside className="w-full xl:w-96 flex flex-col gap-6 md:gap-8">
+
           {/* ATS Score Card */}
           {atsScore ? (
-            <div className="bg-white rounded-[2rem] p-8 shadow-xl border-t-8 border-purple-500 overflow-hidden relative">
+            <div className="glass rounded-2xl md:rounded-[2rem] p-6 md:p-8 border border-white/5 shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-full h-1 bg-[#DC143C]"></div>
+
               <div className="relative z-10">
-                <h3 className="text-xl font-black text-gray-900 mb-6">ATS Analysis</h3>
-                
-                <div className="flex items-center gap-6 mb-8">
-                  <div className="w-24 h-24 rounded-full border-[6px] border-purple-100 flex items-center justify-center relative">
-                    <span className="text-3xl font-black text-purple-600">{atsScore.score}</span>
-                    <svg className="absolute inset-0 w-full h-full rotate-[-90deg]">
-                        <circle 
-                            cx="48" cy="48" r="42" 
-                            fill="none" stroke="currentColor" strokeWidth="6" 
-                            className="text-purple-600" 
-                            strokeDasharray={264}
-                            strokeDashoffset={264 - (264 * atsScore.score) / 100}
-                        />
+                <h3 className="text-sm font-bold text-white uppercase tracking-widest mb-8 md:mb-10">ATS Analysis</h3>
+
+                <div className="flex items-center gap-6 md:gap-8 mb-8 md:mb-10">
+                  <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white/5 flex items-center justify-center relative group-hover:border-[#DC143C]/30 transition-all duration-700">
+                    <div className="flex flex-col items-center">
+                      <span className="text-3xl md:text-4xl font-extrabold text-white leading-none">{atsScore.score}</span>
+                      <span className="text-[8px] md:text-[9px] font-black text-gray-500 uppercase mt-1">Grade</span>
+                    </div>
+                    <svg className="absolute inset-[-4px] w-[calc(100%+8px)] h-[calc(100%+8px)] rotate-[-90deg]">
+                      <circle
+                        cx="58" cy="58" r="54"
+                        fill="none" stroke="#DC143C" strokeWidth="4"
+                        className="transition-all duration-1000 ease-out"
+                        strokeDasharray={340}
+                        strokeDashoffset={340 - (340 * atsScore.score) / 100}
+                      />
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900">Optimization Score</h4>
-                    <p className="text-sm text-gray-500 font-medium">Out of 100 points</p>
+                    <h4 className="text-xs font-bold text-gray-300 uppercase tracking-widest mb-1">ATS Score</h4>
+                    <p className="text-[10px] text-gray-500 font-medium">Standard ATS Optimization</p>
                   </div>
                 </div>
 
-                <div className="space-y-6">
-                  <div>
-                    <h5 className="text-[10px] font-black uppercase text-green-500 tracking-widest mb-2">Strengths</h5>
-                    <ul className="space-y-2">
+                <div className="space-y-6 md:space-y-8">
+                  <div className="bg-white/[0.02] p-4 md:p-5 rounded-xl md:rounded-2xl border border-white/[0.02] hover:bg-white/5 transition-all">
+                    <h5 className="text-[9px] font-black uppercase text-[#DC143C] tracking-[0.2em] mb-3 md:mb-4">Core Strengths</h5>
+                    <ul className="space-y-2 md:space-y-3">
                       {atsScore.strengths.map((str, i) => (
-                        <li key={i} className="text-xs font-bold text-gray-600 flex items-start gap-2">
-                          <span className="text-green-500">✓</span> {str}
+                        <li key={i} className="text-[10px] md:text-[11px] font-bold text-gray-400 flex items-start gap-2 md:gap-3">
+                          <span className="text-[#DC143C] mt-0.5">•</span> {str}
                         </li>
                       ))}
                     </ul>
                   </div>
 
-                  <div>
-                    <h5 className="text-[10px] font-black uppercase text-red-400 tracking-widest mb-2">Areas for Improvement</h5>
-                    <ul className="space-y-2">
+                  <div className="bg-white/[0.02] p-4 md:p-5 rounded-xl md:rounded-2xl border border-white/[0.02] hover:bg-white/5 transition-all">
+                    <h5 className="text-[9px] font-black uppercase text-gray-500 tracking-[0.2em] mb-3 md:mb-4">Improvement Suggestions</h5>
+                    <ul className="space-y-2 md:space-y-3">
                       {atsScore.suggestions.map((sug, i) => (
-                        <li key={i} className="text-xs font-bold text-gray-600 flex items-start gap-2">
-                          <span className="text-yellow-500">!</span> {sug}
+                        <li key={i} className="text-[10px] md:text-[11px] font-bold text-gray-500 flex items-start gap-2 md:gap-3 italic">
+                          <span className="text-yellow-900 mt-0.5">!</span> {sug}
                         </li>
                       ))}
                     </ul>
@@ -352,38 +563,41 @@ export default function PreviewPage() {
               </div>
             </div>
           ) : (
-            <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[2rem] p-8 text-white shadow-xl text-center">
-              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl">⚡</div>
-              <h3 className="text-xl font-black mb-3">AI Resume Scan</h3>
-              <p className="text-indigo-100 text-sm font-medium leading-relaxed mb-8">
-                Run our AI analysis to see how well your resume matches standard Applicant Tracking Systems.
-              </p>
-              <button 
-                onClick={handleRunAtsScan}
-                disabled={scanning}
-                className="w-full py-4 bg-white text-indigo-600 font-black rounded-2xl hover:bg-gray-50 transition-all active:scale-95 disabled:opacity-50"
-              >
-                {scanning ? 'Analyzing...' : 'Scan Now'}
-              </button>
+            <div className="glass-red rounded-2xl md:rounded-[2rem] p-8 md:p-10 text-white shadow-2xl text-center relative overflow-hidden group bg-gradient-to-br from-[#DC143C]/10 to-[#8B0000]/5 border border-[#DC143C]/20">
+              <div className="relative z-10">
+                <div className="w-16 h-16 md:w-20 md:h-20 bg-white shadow-2xl rounded-2xl md:rounded-[2rem] flex items-center justify-center mx-auto mb-6 md:mb-8 transform group-hover:rotate-12 transition-transform duration-500">
+                  <span className="text-2xl md:text-3xl">🛡️</span>
+                </div>
+                <h3 className="text-lg md:text-xl font-extrabold mb-3 md:mb-4 uppercase tracking-tighter">ATS Scan</h3>
+                <p className="text-white/60 text-[10px] md:text-xs font-bold leading-relaxed mb-8 md:mb-10 uppercase tracking-widest">
+                  Evaluate your profile against industry ATS standards.
+                </p>
+                <button
+                  onClick={handleRunAtsScan}
+                  disabled={scanning}
+                  className="w-full h-12 md:h-14 bg-white text-black font-black rounded-xl md:rounded-2xl hover:bg-[#F5F0E8] transition-all active:scale-95 disabled:opacity-50 uppercase tracking-[0.2em] text-[10px]"
+                >
+                  {scanning ? 'Analyzing...' : 'Start AI Analysis'}
+                </button>
+              </div>
             </div>
           )}
 
-          {/* Tips Card */}
-          <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100">
-            <h4 className="font-black text-gray-900 mb-4 tracking-tight">Final Checks</h4>
-            <ul className="space-y-4">
-              <li className="flex gap-3 text-sm text-gray-500 font-medium">
-                <span className="text-indigo-500 font-bold">1.</span>
-                Double check dates for all experiences.
-              </li>
-              <li className="flex gap-3 text-sm text-gray-500 font-medium">
-                <span className="text-indigo-500 font-bold">2.</span>
-                Ensure links to GitHub and Portfolio are working.
-              </li>
-              <li className="flex gap-3 text-sm text-gray-500 font-medium">
-                <span className="text-indigo-500 font-bold">3.</span>
-                Verify email and phone number are correct.
-              </li>
+          {/* Final Checklist */}
+          <div className="glass rounded-2xl md:rounded-[2rem] p-6 md:p-8 shadow-sm border border-white/5">
+            <h4 className="text-[10px] font-black text-white mb-6 md:mb-8 uppercase tracking-[0.3em]">Final Checklist</h4>
+            <ul className="space-y-4 md:space-y-6">
+              {[
+                'Verify all dates and chronological order',
+                'Test all links (GitHub, LinkedIn, Website)',
+                'Double-check contact information',
+                'Ensure summary matches target role'
+              ].map((tip, idx) => (
+                <li key={idx} className="flex gap-3 md:gap-4 items-start group">
+                  <span className="text-[#DC143C] font-black text-xs leading-none mt-1">{idx + 1}.</span>
+                  <p className="text-[9px] md:text-[10px] text-gray-500 font-bold group-hover:text-gray-300 transition-colors uppercase tracking-widest leading-relaxed">{tip}</p>
+                </li>
+              ))}
             </ul>
           </div>
         </aside>

@@ -40,14 +40,12 @@ STRICT RULES:
 
         const result = await generateAiContent(prompt);
 
-        const projectDescription = result;
-
-        
+        const description = result;
 
         return NextResponse.json<ApiResponse>({
             success: true,
             message: "ProjectDescription created",
-            data: { projectDescription}
+            data: { description }
         }, { status: 201 });
 
     } catch (error) {
@@ -55,7 +53,7 @@ STRICT RULES:
         return NextResponse.json<ApiResponse>(
             {
                 success: false,
-                message: "Somthing went wrong",
+                message: "Something went wrong",
             },
             { status: 500 }
         )

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import axios from 'axios';
 import { useRouter, useParams } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -134,7 +134,7 @@ export default function ProjectsPage() {
 
     try {
       setGeneratingDescription(true);
-      toast.loading('🤖 Generating project description with AI...');
+      toast.loading('🤖 Generating project description...', { id: 'ai-proj' });
 
       const response = await axios.post(
         '/api/ai/generate-project-description',
@@ -153,14 +153,14 @@ export default function ProjectsPage() {
           ...prev,
           description
         }));
-        toast.dismiss();
+        toast.dismiss('ai-proj');
         toast.success('✨ Description generated!');
       } else {
-        toast.dismiss();
+        toast.dismiss('ai-proj');
         toast.error(response.data.message || 'Failed to generate description');
       }
     } catch (error: unknown) {
-      toast.dismiss();
+      toast.dismiss('ai-proj');
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data?.message || 'Failed to generate description');
       }
@@ -220,6 +220,8 @@ export default function ProjectsPage() {
   const handleEditProject = (index: number) => {
     setFormData(projects[index]);
     setEditingIndex(index);
+    // Scroll to form on mobile
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Delete project
@@ -275,56 +277,56 @@ export default function ProjectsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]">
         <div className="text-center">
-          <svg className="animate-spin h-12 w-12 text-blue-600 mx-auto mb-4" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <p className="text-gray-600">Loading resume...</p>
+          <div className="w-12 h-12 border-4 border-[#DC143C]/20 border-t-[#DC143C] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500 font-medium text-sm">Loading resume...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-[#0A0A0A] text-white relative overflow-x-hidden">
+      {/* Background Accents */}
+      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-[#DC143C]/10 to-transparent -z-0 pointer-events-none"></div>
+
       {/* Navbar */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-2">
-              ← Back to Dashboard
-            </Link>
-            <h1 className="text-xl font-bold text-gray-900">Projects</h1>
-            <div className="w-24"></div>
+      <nav className="glass sticky top-0 z-50 border-b border-white/5">
+        <div className="max-w-5xl mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
+          <Link href="/dashboard" className="group flex items-center gap-2 text-gray-400 hover:text-white transition-all font-bold uppercase tracking-widest text-[9px] md:text-[10px]">
+            <span className="group-hover:-translate-x-1 transition-transform">←</span> Dashboard
+          </Link>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-[#DC143C] rounded-full animate-pulse"></div>
+            <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-gray-500">Step 4: Projects</span>
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-16 relative z-10">
+
         {/* Page Header */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Projects</h2>
-          <p className="text-gray-600">Showcase your best work and projects</p>
+        <div className="mb-8 md:mb-10 text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">Key Projects</h2>
+          <p className="text-gray-500 text-xs sm:text-sm md:text-base font-medium px-4">Highlight your best work, technical depth, and problem-solving skills.</p>
         </div>
 
         {/* Main Card */}
-        <div className="bg-white rounded-xl shadow-lg p-8 md:p-10">
-          
+        <div className="glass rounded-2xl md:rounded-[2rem] p-4 sm:p-6 md:p-10 border border-white/5 shadow-2xl relative overflow-hidden">
+
           {/* Form Section */}
-          <div className="border-b border-gray-200 pb-8 mb-8">
-            <h3 className="text-lg font-bold text-gray-900 mb-6">
-              {editingIndex !== null ? 'Edit Project' : 'Add New Project'}
+          <div className="border-b border-white/5 pb-8 md:pb-10 mb-8 md:mb-10">
+            <h3 className="text-base md:text-lg font-bold text-white mb-6 md:mb-8">
+              {editingIndex !== null ? '✏️ Edit Project' : '➕ Add New Project'}
             </h3>
 
-            <div className="space-y-6">
-              
+            <div className="space-y-6 md:space-y-8">
+
               {/* Project Title */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="group">
+                <label className="block text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 md:mb-3 px-1 group-focus-within:text-[#DC143C] transition-colors">
                   Project Title *
                 </label>
                 <input
@@ -332,56 +334,54 @@ export default function ProjectsPage() {
                   name="title"
                   value={formData.title || ''}
                   onChange={handleChange}
-                  placeholder="e.g., AI Resume Builder"
-                  className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                    errors.title
-                      ? 'border-red-500 focus:border-red-500'
-                      : 'border-gray-200 focus:border-blue-500'
-                  } focus:outline-none bg-gray-50`}
+                  placeholder="e.g. AI Content Platform"
+                  className={`w-full px-4 md:px-5 py-3 rounded-xl border-2 transition-all font-medium text-sm md:text-base ${errors.title
+                    ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                    : 'border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50'
+                    } focus:outline-none text-white placeholder-gray-700`}
                 />
                 {errors.title && (
-                  <p className="mt-2 text-sm text-red-600">⚠️ {errors.title}</p>
+                  <p className="mt-2 text-xs text-red-500 font-medium px-1">{errors.title}</p>
                 )}
               </div>
 
               {/* Description with AI */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-gray-700">
+              <div className="group">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 md:mb-3 px-1 gap-2">
+                  <label className="block text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest group-focus-within:text-[#DC143C] transition-colors">
                     Project Description *
                   </label>
                   <button
                     type="button"
                     onClick={handleGenerateDescription}
                     disabled={generatingDescription}
-                    className="text-xs px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-700 font-semibold rounded transition-colors"
+                    className="text-[9px] md:text-[10px] px-3 py-1.5 bg-[#DC143C]/10 hover:bg-[#DC143C]/20 text-[#DC143C] font-bold rounded-lg border border-[#DC143C]/20 transition-all uppercase tracking-widest disabled:opacity-50 self-start sm:self-auto"
                   >
-                    {generatingDescription ? '⏳ Generating...' : '✨ Generate with AI'}
+                    {generatingDescription ? '⏳ Analyzing...' : '✨ Generate with AI'}
                   </button>
                 </div>
                 <textarea
                   name="description"
                   value={formData.description || ''}
                   onChange={handleChange}
-                  placeholder="Describe your project, what problems it solves, and your role..."
+                  placeholder="Describe the features, architecture, and your contributions..."
                   rows={4}
-                  className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                    errors.description
-                      ? 'border-red-500 focus:border-red-500'
-                      : 'border-gray-200 focus:border-blue-500'
-                  } focus:outline-none bg-gray-50 resize-none`}
+                  className={`w-full px-4 md:px-5 py-3 md:py-4 rounded-xl md:rounded-2xl border-2 transition-all font-medium text-sm md:text-base ${errors.description
+                    ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                    : 'border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50'
+                    } focus:outline-none text-white placeholder-gray-700 resize-none`}
                 />
                 {errors.description && (
-                  <p className="mt-2 text-sm text-red-600">⚠️ {errors.description}</p>
+                  <p className="mt-2 text-xs text-red-500 font-medium px-1">{errors.description}</p>
                 )}
               </div>
 
               {/* Tech Stack */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Technologies Used *
+              <div className="group">
+                <label className="block text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 md:mb-3 px-1 group-focus-within:text-[#DC143C] transition-colors">
+                  Technology Stack *
                 </label>
-                <div className="flex gap-3 mb-3">
+                <div className="flex gap-2 md:gap-3 mb-3 md:mb-4">
                   <input
                     type="text"
                     value={techInput}
@@ -392,27 +392,27 @@ export default function ProjectsPage() {
                         handleAddTech();
                       }
                     }}
-                    placeholder="e.g., React, Node.js, MongoDB"
-                    className="flex-1 px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:outline-none bg-gray-50"
+                    placeholder="e.g. Next.js, OpenAI, Redis"
+                    className="flex-1 min-w-0 px-4 md:px-5 py-3 rounded-xl border-2 border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50 focus:outline-none text-white font-medium text-sm md:text-base placeholder-gray-700 transition-all"
                   />
                   <button
                     type="button"
                     onClick={handleAddTech}
-                    className="px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold rounded-lg transition-colors"
+                    className="px-4 md:px-6 py-3 bg-white/5 hover:bg-white/10 text-white font-bold rounded-xl border border-white/5 transition-all text-[10px] md:text-xs uppercase tracking-widest shrink-0"
                   >
                     Add
                   </button>
                 </div>
-                
+
                 {formData.techStack && formData.techStack.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {formData.techStack.map((tech, idx) => (
-                      <div key={idx} className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+                      <div key={idx} className="inline-flex items-center gap-2 md:gap-3 px-2.5 md:px-3 py-1 bg-[#DC143C]/10 border border-[#DC143C]/20 text-[#DC143C] rounded-lg text-[10px] md:text-xs font-bold uppercase tracking-wider">
                         {tech}
                         <button
                           type="button"
                           onClick={() => handleRemoveTech(tech)}
-                          className="hover:text-red-600 transition-colors"
+                          className="hover:text-white transition-colors"
                         >
                           ✕
                         </button>
@@ -421,70 +421,67 @@ export default function ProjectsPage() {
                   </div>
                 )}
                 {errors.techStack && (
-                  <p className="mt-2 text-sm text-red-600">⚠️ {errors.techStack}</p>
+                  <p className="mt-2 text-xs text-red-500 font-medium px-1">{errors.techStack}</p>
                 )}
               </div>
 
-              {/* GitHub URL */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  GitHub Repository
-                </label>
-                <input
-                  type="url"
-                  name="githubUrl"
-                  value={formData.githubUrl || ''}
-                  onChange={handleChange}
-                  placeholder="https://github.com/username/repo"
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:outline-none bg-gray-50"
-                />
-              </div>
+              {/* URLs Section */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                <div className="group">
+                  <label className="block text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 md:mb-3 px-1 group-focus-within:text-[#DC143C] transition-colors">
+                    GitHub Repository
+                  </label>
+                  <input
+                    type="url"
+                    name="githubUrl"
+                    value={formData.githubUrl || ''}
+                    onChange={handleChange}
+                    placeholder="github.com/user/project"
+                    className="w-full px-4 md:px-5 py-3 rounded-xl border-2 border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50 focus:outline-none text-white font-medium text-sm md:text-base placeholder-gray-700 transition-all"
+                  />
+                </div>
 
-              {/* Live URL */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Live Website/Demo
-                </label>
-                <input
-                  type="url"
-                  name="liveUrl"
-                  value={formData.liveUrl || ''}
-                  onChange={handleChange}
-                  placeholder="https://yourproject.com"
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:outline-none bg-gray-50"
-                />
+                <div className="group">
+                  <label className="block text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 md:mb-3 px-1 group-focus-within:text-[#DC143C] transition-colors">
+                    Live URL
+                  </label>
+                  <input
+                    type="url"
+                    name="liveUrl"
+                    value={formData.liveUrl || ''}
+                    onChange={handleChange}
+                    placeholder="myproject.vercel.app"
+                    className="w-full px-4 md:px-5 py-3 rounded-xl border-2 border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50 focus:outline-none text-white font-medium text-sm md:text-base placeholder-gray-700 transition-all"
+                  />
+                </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3 mt-6">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mt-8 md:mt-10">
               <button
                 type="button"
                 onClick={handleAddProject}
                 disabled={saving}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all disabled:opacity-50"
+                className="flex-1 relative group overflow-hidden rounded-xl bg-gradient-to-r from-[#DC143C] to-[#8B0000] h-12 disabled:opacity-50"
               >
-                {saving ? (
-                  <span className="flex items-center gap-2">
-                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Saving...
-                  </span>
-                ) : editingIndex !== null ? (
-                  '✏️ Update Project'
-                ) : (
-                  '➕ Add Project'
-                )}
+                <div className="relative flex items-center justify-center gap-2 text-white font-bold uppercase tracking-widest text-[10px] md:text-xs">
+                  {saving ? (
+                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  ) : editingIndex !== null ? (
+                    'Update Project'
+                  ) : (
+                    'Add Project'
+                  )}
+                </div>
               </button>
               {editingIndex !== null && (
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold rounded-lg transition-colors"
+                  className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold uppercase tracking-widest text-[10px] md:text-xs rounded-xl h-12 transition-all border border-white/5"
                 >
-                  Cancel
+                  Discard Changes
                 </button>
               )}
             </div>
@@ -492,26 +489,25 @@ export default function ProjectsPage() {
 
           {/* Projects List */}
           {projects.length > 0 && (
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-6">Your Projects ({projects.length})</h3>
-              <div className="space-y-4">
+            <div className="space-y-4 md:space-y-6">
+              <h3 className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-[0.25em] md:tracking-[0.3em] mb-4 md:mb-6 px-1">Projects List ({projects.length})</h3>
+              <div className="grid grid-cols-1 gap-4 md:gap-6">
                 {projects.map((project, index) => (
                   <div
                     key={index}
-                    className={`p-6 rounded-lg border-2 transition-all ${
-                      editingIndex === index
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300 bg-gray-50'
-                    }`}
+                    className={`p-4 md:p-6 rounded-xl md:rounded-2xl border-2 transition-all relative overflow-hidden group/item ${editingIndex === index
+                      ? 'border-[#DC143C]/50 bg-[#DC143C]/5'
+                      : 'border-white/5 bg-white/[0.02] hover:border-white/10'
+                      }`}
                   >
-                    <div className="flex items-start justify-between gap-4 mb-3">
-                      <div>
-                        <h4 className="text-lg font-semibold text-gray-900">{project.title}</h4>
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 md:gap-4 mb-3 md:mb-4">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-base md:text-xl font-bold text-white group-hover/item:text-[#DC143C] transition-colors truncate">{project.title}</h4>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 shrink-0">
                         <button
                           onClick={() => handleEditProject(index)}
-                          className="p-2 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg transition-colors"
+                          className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 text-white rounded-lg md:rounded-xl border border-white/5 transition-all text-sm"
                           title="Edit"
                         >
                           ✏️
@@ -519,35 +515,35 @@ export default function ProjectsPage() {
                         <button
                           onClick={() => handleDeleteProject(index)}
                           disabled={saving}
-                          className="p-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-colors disabled:opacity-50"
+                          className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-red-500/5 hover:bg-red-500/20 text-red-500 rounded-lg md:rounded-xl border border-red-500/10 transition-all disabled:opacity-30 text-sm"
                           title="Delete"
                         >
                           🗑️
                         </button>
                       </div>
                     </div>
-                    
-                    <p className="text-gray-700 mb-3">{project.description}</p>
-                    
+
+                    <p className="text-gray-400 text-xs md:text-sm leading-relaxed font-medium mb-3 md:mb-4 line-clamp-3">{project.description}</p>
+
                     {project.techStack && project.techStack.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-3">
+                      <div className="flex flex-wrap gap-1.5 md:gap-2 mb-4 md:mb-6">
                         {project.techStack.map((tech, idx) => (
-                          <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded">
+                          <span key={idx} className="px-2 py-0.5 bg-white/5 text-gray-400 text-[9px] md:text-[10px] font-bold uppercase tracking-widest rounded border border-white/5">
                             {tech}
                           </span>
                         ))}
                       </div>
                     )}
-                    
-                    <div className="flex gap-4 text-sm">
+
+                    <div className="flex flex-wrap gap-3 md:gap-4">
                       {project.githubUrl && (
                         <a
                           href={project.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-700 font-semibold"
+                          className="text-[#DC143C] hover:text-white font-bold text-[9px] md:text-[10px] uppercase tracking-widest flex items-center gap-1.5 underline decoration-[#DC143C]/50 underline-offset-4"
                         >
-                          🔗 GitHub
+                          🔗 Source Code
                         </a>
                       )}
                       {project.liveUrl && (
@@ -555,7 +551,7 @@ export default function ProjectsPage() {
                           href={project.liveUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-700 font-semibold"
+                          className="text-[#DC143C] hover:text-white font-bold text-[9px] md:text-[10px] uppercase tracking-widest flex items-center gap-1.5 underline decoration-[#DC143C]/50 underline-offset-4"
                         >
                           🚀 Live Demo
                         </a>
@@ -568,32 +564,34 @@ export default function ProjectsPage() {
           )}
 
           {projects.length === 0 && editingIndex === null && (
-            <div className="text-center py-12">
-              <p className="text-gray-500 mb-4">No projects added yet</p>
+            <div className="text-center py-16 md:py-20 opacity-30">
+              <div className="text-4xl md:text-5xl mb-4">📂</div>
+              <p className="text-xs md:text-sm font-bold uppercase tracking-widest text-gray-500">No projects added yet</p>
+              <p className="text-[10px] text-gray-600 mt-2">Use the form above to add your first project.</p>
             </div>
           )}
         </div>
 
         {/* Navigation */}
-        <div className="mt-8 flex gap-4">
+        <div className="mt-8 md:mt-10 flex flex-col sm:flex-row gap-3 md:gap-4">
           <Link
             href={`/resume/${resumeId}/skills`}
-            className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-3 rounded-lg transition-colors text-center"
+            className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold uppercase tracking-widest text-[10px] md:text-xs h-12 md:h-14 flex items-center justify-center rounded-xl md:rounded-2xl transition-all border border-white/5"
           >
             ← Previous: Skills
           </Link>
           <Link
             href={`/resume/${resumeId}/experience`}
-            className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-lg transition-all text-center"
+            className="flex-1 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold uppercase tracking-widest text-[10px] md:text-xs h-12 md:h-14 flex items-center justify-center rounded-xl md:rounded-2xl transition-all shadow-xl shadow-[#DC143C]/20"
           >
             Next: Experience →
           </Link>
         </div>
 
-        {/* Info Box */}
-        <div className="mt-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-          <p className="text-sm text-blue-800">
-            <span className="font-semibold">💡 Tip:</span> Include 2-3 of your best projects with clear descriptions and links. Use the AI generator to create compelling descriptions based on your project title and tech stack.
+        {/* Tip */}
+        <div className="mt-6 md:mt-10 text-center opacity-40">
+          <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] text-gray-500 px-4">
+            Tip: Prioritize projects that demonstrate production-ready engineering and modern architectural patterns.
           </p>
         </div>
       </div>

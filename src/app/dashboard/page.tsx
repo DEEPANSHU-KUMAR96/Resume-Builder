@@ -127,6 +127,7 @@ export default function DashboardPage() {
   // Logout handler
   const handleLogout = async () => {
     try {
+      await axios.post('/api/auth/logout');
       // Clear any stored tokens/data
       localStorage.clear();
       sessionStorage.clear();
@@ -140,68 +141,65 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-[#0A0A0A] relative overflow-x-hidden selection:bg-[#DC143C]/30">
+      {/* Background Glows */}
+      <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-[#DC143C]/5 rounded-full blur-[100px] md:blur-[150px] -z-0 pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-[20%] h-[20%] bg-[#DC143C]/5 rounded-full blur-[100px] -z-0 pointer-events-none"></div>
+
       {/* Navbar */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">R</span>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900">Resume Builder</h1>
+      <nav className="glass sticky top-0 z-50 border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-gradient-to-br from-[#DC143C] to-[#8B0000] rounded-lg flex items-center justify-center shadow-[#DC143C]/20 border border-white/10">
+              <span className="text-white font-bold text-lg">R</span>
             </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors rounded-lg hover:bg-gray-100"
-            >
-              Logout
-            </button>
+            <h1 className="text-lg font-bold text-white tracking-tight uppercase">Resume Builder</h1>
           </div>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 border border-white/10 hover:border-[#DC143C]/50 hover:bg-[#DC143C]/5 text-gray-400 hover:text-white font-bold text-xs uppercase tracking-widest transition-all rounded-lg"
+          >
+            Logout
+          </button>
         </div>
       </nav>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16 relative z-10">
         
         {/* Header Section */}
-        <div className="mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-2">My Resumes</h2>
-          <p className="text-gray-600 text-lg">Create and manage your professional resumes</p>
-        </div>
-
-        {/* Create New Resume Button */}
-        <div className="mb-12">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
+          <div>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-2 tracking-tight">Your Resumes</h2>
+            <p className="text-gray-500 font-medium text-sm md:text-lg max-w-xl">
+              Manage and optimize your professional resumes with AI.
+            </p>
+          </div>
+          
           <button
             onClick={handleCreateResume}
             disabled={creatingResume}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="group relative overflow-hidden px-6 md:px-8 py-3 md:py-4 rounded-xl active:scale-95 transition-all text-white font-bold text-sm shadow-xl shadow-[#DC143C]/10"
           >
-            {creatingResume ? (
-              <>
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Creating...
-              </>
-            ) : (
-              <>
-                <span className="text-xl">+</span>
-                Create New Resume
-              </>
-            )}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#DC143C] to-[#8B0000] group-hover:scale-110 transition-transform"></div>
+            <div className="relative flex items-center gap-2">
+              {creatingResume ? (
+                <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  <span className="text-xl">+</span>
+                  Create New
+                </>
+              )}
+            </div>
           </button>
         </div>
 
         {/* Loading State */}
         {loading && (
-          <div className="flex flex-col items-center justify-center py-16">
-            <svg className="animate-spin h-12 w-12 text-blue-600 mb-4" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <p className="text-gray-600 text-lg">Loading your resumes...</p>
+          <div className="flex flex-col items-center justify-center py-24 space-y-4">
+            <div className="w-12 h-12 border-3 border-[#DC143C]/20 border-t-[#DC143C] rounded-full animate-spin"></div>
+            <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Loading Resumes...</p>
           </div>
         )}
 
@@ -209,52 +207,43 @@ export default function DashboardPage() {
         {!loading && (
           <>
             {resumes.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {resumes.map((resume) => (
                   <div
                     key={resume._id}
-                    className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow overflow-hidden group"
+                    className="glass rounded-[1.5rem] border border-white/5 hover:border-[#DC143C]/30 transition-all group relative overflow-hidden"
                   >
-                    {/* Card Header */}
-                    <div className="bg-gradient-to-r from-blue-600 to-indigo-600 h-24 relative overflow-hidden">
-                      <div className="absolute inset-0 opacity-10">
-                        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,.1)_25%,rgba(255,255,255,.1)_50%,transparent_50%,transparent_75%,rgba(255,255,255,.1)_75%,rgba(255,255,255,.1))] bg-[length:50px_50px]"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#DC143C]/20 to-transparent group-hover:via-[#DC143C]/50 transition-all"></div>
+                    
+                    <div className="p-6 md:p-8">
+                      <div className="flex items-start justify-between mb-6">
+                        <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-xl group-hover:bg-[#DC143C]/10 transition-colors">📄</div>
+                        <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider bg-white/5 px-2 py-1 rounded-md border border-white/5">
+                          {new Date(resume.updatedAt || '').toLocaleDateString()}
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Card Body */}
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2 truncate">
+                      <h3 className="text-xl md:text-2xl font-bold text-white mb-2 truncate group-hover:text-[#DC143C] transition-colors">
                         {resume.title || 'Untitled Resume'}
                       </h3>
                       
-                      <div className="space-y-3 mb-6">
-                        {resume.personalInfo?.fullname && (
-                          <p className="text-sm text-gray-600">
-                            <span className="font-medium text-gray-700">Name:</span> {resume.personalInfo.fullname}
-                          </p>
-                        )}
-                        {resume.personalInfo?.email && (
-                          <p className="text-sm text-gray-600 truncate">
-                            <span className="font-medium text-gray-700">Email:</span> {resume.personalInfo.email}
-                          </p>
-                        )}
-                        <p className="text-xs text-gray-500">
-                          Last updated: {new Date(resume.updatedAt || '').toLocaleDateString()}
+                      <div className="space-y-4 mb-6">
+                        <p className="text-xs text-gray-500 font-bold uppercase tracking-wider truncate">
+                            {resume.personalInfo?.fullname || 'No Name Provided'}
                         </p>
                       </div>
 
                       {/* Progress Bar */}
-                      <div className="mb-6">
+                      <div className="mb-8 p-4 bg-white/5 rounded-xl border border-white/5">
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-xs font-medium text-gray-600">Profile Completion</span>
-                          <span className="text-xs font-bold text-blue-600">
+                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Completion</span>
+                          <span className="text-xs font-bold text-[#DC143C]">
                             {calculateCompletion(resume)}%
                           </span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="w-full bg-white/5 rounded-full h-1 overflow-hidden">
                           <div
-                            className="bg-gradient-to-r from-blue-600 to-indigo-600 h-2 rounded-full transition-all duration-300"
+                            className="bg-gradient-to-r from-[#DC143C] to-[#8B0000] h-full rounded-full transition-all duration-700"
                             style={{ width: `${calculateCompletion(resume)}%` }}
                           ></div>
                         </div>
@@ -264,28 +253,25 @@ export default function DashboardPage() {
                       <div className="flex gap-3">
                         <Link
                           href={`/resume/${resume._id}/personal-info`}
-                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-colors text-center text-sm"
+                          className="flex-1 bg-white text-black hover:bg-[#DC143C] hover:text-white font-bold text-xs uppercase tracking-widest py-3 rounded-lg transition-all text-center"
                         >
                           Edit
                         </Link>
                         <Link
                           href={`/resume/${resume._id}/preview`}
-                          className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-2 rounded-lg transition-colors text-center text-sm"
+                          className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-widest py-3 rounded-lg border border-white/5 transition-all text-center"
                         >
                           Preview
                         </Link>
                         <button
                           onClick={() => handleDeleteResume(resume._id || '')}
                           disabled={deleting === resume._id}
-                          className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-10 h-10 flex items-center justify-center bg-red-500/5 hover:bg-red-500/20 text-red-500 rounded-lg border border-red-500/10 transition-all"
                         >
                           {deleting === resume._id ? (
-                            <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
+                            <div className="w-4 h-4 border-2 border-red-500/20 border-t-red-500 rounded-full animate-spin"></div>
                           ) : (
-                            '🗑️'
+                            '🗑'
                           )}
                         </button>
                       </div>
@@ -294,17 +280,16 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16">
-                <div className="text-6xl mb-4">📄</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">No resumes yet</h3>
-                <p className="text-gray-600 mb-6">Create your first resume to get started</p>
+              <div className="glass rounded-[2rem] py-20 text-center border-dashed border-2 border-white/5">
+                <div className="text-5xl mb-6 opacity-20">🗂</div>
+                <h3 className="text-2xl font-bold text-white mb-2">No Resumes Found</h3>
+                <p className="text-gray-500 text-sm mb-8">Start by creating your first AI-optimized resume.</p>
                 <button
                   onClick={handleCreateResume}
                   disabled={creatingResume}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all transform hover:scale-105"
+                  className="px-8 py-3 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-xl transition-all"
                 >
-                  <span className="text-xl">+</span>
-                  Create Your First Resume
+                  Create New Resume
                 </button>
               </div>
             )}

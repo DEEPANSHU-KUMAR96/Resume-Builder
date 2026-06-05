@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 export default function RegisterPage() {
   const router = useRouter();
-  
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -68,7 +68,7 @@ export default function RegisterPage() {
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error for this field when user starts typing
     if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({
@@ -99,7 +99,7 @@ export default function RegisterPage() {
 
       if (response.data.success) {
         toast.success('Account created successfully! Redirecting to login...');
-        
+
         // Clear form
         setFormData({
           name: '',
@@ -129,29 +129,36 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 py-12">
+    <div className="h-screen bg-[#0A0A0A] flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#C41E3A] opacity-10 blur-[120px] rounded-full animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#C41E3A] opacity-5 blur-[120px] rounded-full"></div>
+
       {/* Main Container */}
-      <div className="w-full max-w-md">
-        
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10">
-          
+      <div className="w-full max-w-md relative z-10 transition-all duration-500">
+
+        {/* Registration Card */}
+        <div className="glass rounded-[2rem] p-8 md:p-10 border border-white/5 shadow-2xl backdrop-blur-3xl">
+
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+          <div className="text-center mb-10">
+            <div className="inline-block px-3 py-1 mb-4 rounded-full bg-[#DC143C]/10 border border-[#DC143C]/20">
+              <span className="text-[10px] font-bold text-[#DC143C] uppercase tracking-[0.2em]">Start Your Journey</span>
+            </div>
+            <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-2 tracking-tight">
               Create Account
             </h1>
-            <p className="text-gray-600 text-sm md:text-base">
-              Build your professional resume with AI
+            <p className="text-gray-500 text-sm md:text-base font-medium">
+              Join thousands of professionals building their future
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            
+          <form onSubmit={handleSubmit} className="space-y-6">
+
             {/* Full Name Field */}
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="group">
+              <label htmlFor="name" className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1 group-focus-within:text-[#DC143C] transition-colors">
                 Full Name
               </label>
               <input
@@ -161,22 +168,21 @@ export default function RegisterPage() {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="John Doe"
-                className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                  errors.name
-                    ? 'border-red-500 focus:border-red-500 focus:ring-red-100'
-                    : 'border-gray-200 focus:border-blue-500 focus:ring-blue-100'
-                } focus:outline-none focus:ring-4 bg-gray-50 text-gray-900 placeholder-gray-500`}
+                className={`w-full px-5 py-4 rounded-2xl border-2 transition-all font-medium text-sm md:text-base ${errors.name
+                  ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                  : 'border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50'
+                  } focus:outline-none text-white placeholder-gray-700`}
               />
               {errors.name && (
-                <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                  <span className="text-lg">⚠️</span> {errors.name}
+                <p className="mt-2 text-xs text-red-500 font-bold px-1 transition-all">
+                  {errors.name}
                 </p>
               )}
             </div>
 
             {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="group">
+              <label htmlFor="email" className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1 group-focus-within:text-[#DC143C] transition-colors">
                 Email Address
               </label>
               <input
@@ -185,117 +191,114 @@ export default function RegisterPage() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="you@example.com"
-                className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                  errors.email
-                    ? 'border-red-500 focus:border-red-500 focus:ring-red-100'
-                    : 'border-gray-200 focus:border-blue-500 focus:ring-blue-100'
-                } focus:outline-none focus:ring-4 bg-gray-50 text-gray-900 placeholder-gray-500`}
+                placeholder="john@example.com"
+                className={`w-full px-5 py-4 rounded-2xl border-2 transition-all font-medium text-sm md:text-base ${errors.email
+                  ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                  : 'border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50'
+                  } focus:outline-none text-white placeholder-gray-700`}
               />
               {errors.email && (
-                <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                  <span className="text-lg">⚠️</span> {errors.email}
+                <p className="mt-2 text-xs text-red-500 font-bold px-1 transition-all">
+                  {errors.email}
                 </p>
               )}
             </div>
 
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                  errors.password
-                    ? 'border-red-500 focus:border-red-500 focus:ring-red-100'
-                    : 'border-gray-200 focus:border-blue-500 focus:ring-blue-100'
-                } focus:outline-none focus:ring-4 bg-gray-50 text-gray-900 placeholder-gray-500`}
-              />
-              {errors.password && (
-                <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                  <span className="text-lg">⚠️</span> {errors.password}
-                </p>
-              )}
-            </div>
+            {/* Password Grid */}
+            <div className="grid grid-cols-1 gap-6">
+              {/* Password Field */}
+              <div className="group">
+                <label htmlFor="password" className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1 group-focus-within:text-[#DC143C] transition-colors">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  className={`w-full px-5 py-4 rounded-2xl border-2 transition-all font-medium text-sm md:text-base ${errors.password
+                    ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                    : 'border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50'
+                    } focus:outline-none text-white placeholder-gray-700`}
+                />
+                {errors.password && (
+                  <p className="mt-2 text-xs text-red-500 font-bold px-1 transition-all">
+                    {errors.password}
+                  </p>
+                )}
+              </div>
 
-            {/* Confirm Password Field */}
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${
-                  errors.confirmPassword
-                    ? 'border-red-500 focus:border-red-500 focus:ring-red-100'
-                    : 'border-gray-200 focus:border-blue-500 focus:ring-blue-100'
-                } focus:outline-none focus:ring-4 bg-gray-50 text-gray-900 placeholder-gray-500`}
-              />
-              {errors.confirmPassword && (
-                <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                  <span className="text-lg">⚠️</span> {errors.confirmPassword}
-                </p>
-              )}
+              {/* Confirm Password Field */}
+              <div className="group">
+                <label htmlFor="confirmPassword" className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1 group-focus-within:text-[#DC143C] transition-colors">
+                  Confirm Password
+                </label>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  className={`w-full px-5 py-4 rounded-2xl border-2 transition-all font-medium text-sm md:text-base ${errors.confirmPassword
+                    ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                    : 'border-white/5 bg-[#1A1A1A] focus:border-[#DC143C]/50'
+                    } focus:outline-none text-white placeholder-gray-700`}
+                />
+                {errors.confirmPassword && (
+                  <p className="mt-2 text-xs text-red-500 font-bold px-1 transition-all">
+                    {errors.confirmPassword}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 mt-6"
+              className="w-full relative group/btn overflow-hidden bg-gradient-to-r from-[#DC143C] to-[#8B0000] hover:shadow-2xl hover:shadow-[#DC143C]/20 text-white font-bold h-14 rounded-2xl transition-all active:scale-95 disabled:opacity-50 disabled:scale-100 mt-6"
             >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Creating your account...
-                </span>
-              ) : (
-                'Create Account'
-              )}
+              <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
+              <div className="relative flex items-center justify-center gap-3 uppercase tracking-[0.2em] text-xs">
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                ) : (
+                  'Sign Up'
+                )}
+              </div>
             </button>
           </form>
 
           {/* Divider */}
-          <div className="relative my-8">
+          <div className="relative my-10">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
+              <div className="w-full border-t border-white/5"></div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">or</span>
+            <div className="relative flex justify-center text-[10px]">
+              <span className="px-4 bg-[#0A0A0A] text-gray-600 font-bold uppercase tracking-widest">Or</span>
             </div>
           </div>
 
           {/* Login Link */}
           <div className="text-center">
-            <p className="text-gray-600 text-sm md:text-base">
+            <p className="text-gray-500 text-sm font-medium">
               Already have an account?{' '}
               <Link
                 href="/auth/login"
-                className="text-blue-600 font-semibold hover:text-blue-700 transition-colors"
+                className="text-[#DC143C] font-bold hover:text-white transition-colors underline-offset-4 hover:underline"
               >
-                Sign in here
+                Sign In
               </Link>
             </p>
           </div>
         </div>
 
         {/* Footer Text */}
-        <div className="text-center mt-8 text-gray-600 text-xs md:text-sm">
-          <p>By creating an account, you agree to our Terms of Service and Privacy Policy</p>
+        <div className="text-center mt-10 text-gray-600 text-[10px] font-bold uppercase tracking-[0.3em] opacity-40 hover:opacity-100 transition-opacity">
+          <p>Secure Professional Experience &copy; 2024</p>
         </div>
       </div>
     </div>
