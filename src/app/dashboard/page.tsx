@@ -9,7 +9,7 @@ import { IResume } from '@/types/resume.types';
 
 export default function DashboardPage() {
   const router = useRouter();
-  
+
   const [resumes, setResumes] = useState<IResume[]>([]);
   const [loading, setLoading] = useState(true);
   const [creatingResume, setCreatingResume] = useState(false);
@@ -21,41 +21,41 @@ export default function DashboardPage() {
   }, []);
 
   // Fetch resumes from API
-  const fetchResumes = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get('/api/resume', {
-        withCredentials: true
-      });
+    const fetchResumes = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/api/resume', {
+          withCredentials: true
+        });
 
-      if (response.data.success) {
-        setResumes(response.data.data || []);
-      } else {
-        toast.error(response.data.message || 'Failed to fetch resumes');
-      }
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 401) {
-          // Unauthorized - redirect to login
-          router.push('/auth/login');
-          toast.error('Your session has expired. Please login again.');
+        if (response.data.success) {
+          setResumes(response.data.data || []);
         } else {
-          toast.error(error.response?.data?.message || 'Failed to fetch resumes');
+          toast.error(response.data.message || 'Failed to fetch resumes');
         }
-      } else {
-        toast.error('An unexpected error occurred');
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 401) {
+          // Unauthorized - redirect to login
+            router.push('/auth/login');
+            toast.error('Your session has expired. Please login again.');
+          } else {
+            toast.error(error.response?.data?.message || 'Failed to fetch resumes');
+          }
+        } else {
+          toast.error('An unexpected error occurred');
+        }
+        console.error('Fetch resumes error:', error);
+      } finally {
+        setLoading(false);
       }
-      console.error('Fetch resumes error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
   // Create new resume
   const handleCreateResume = async () => {
     try {
       setCreatingResume(true);
-      const response = await axios.post('/api/resume/create', 
+      const response = await axios.post('/api/resume/create',
         {
           title: 'Untitled Resume'
         },
@@ -131,7 +131,7 @@ export default function DashboardPage() {
       // Clear any stored tokens/data
       localStorage.clear();
       sessionStorage.clear();
-      
+
       toast.success('Logged out successfully');
       router.push('/auth/login');
     } catch (error) {
@@ -166,7 +166,7 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16 relative z-10">
-        
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
           <div>
@@ -175,7 +175,7 @@ export default function DashboardPage() {
               Manage and optimize your professional resumes with AI.
             </p>
           </div>
-          
+
           <button
             onClick={handleCreateResume}
             disabled={creatingResume}
@@ -214,7 +214,7 @@ export default function DashboardPage() {
                     className="glass rounded-[1.5rem] border border-white/5 hover:border-[#DC143C]/30 transition-all group relative overflow-hidden"
                   >
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#DC143C]/20 to-transparent group-hover:via-[#DC143C]/50 transition-all"></div>
-                    
+
                     <div className="p-6 md:p-8">
                       <div className="flex items-start justify-between mb-6">
                         <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-xl group-hover:bg-[#DC143C]/10 transition-colors">📄</div>
@@ -226,10 +226,10 @@ export default function DashboardPage() {
                       <h3 className="text-xl md:text-2xl font-bold text-white mb-2 truncate group-hover:text-[#DC143C] transition-colors">
                         {resume.title || 'Untitled Resume'}
                       </h3>
-                      
+
                       <div className="space-y-4 mb-6">
                         <p className="text-xs text-gray-500 font-bold uppercase tracking-wider truncate">
-                            {resume.personalInfo?.fullname || 'No Name Provided'}
+                          {resume.personalInfo?.fullname || 'No Name Provided'}
                         </p>
                       </div>
 
