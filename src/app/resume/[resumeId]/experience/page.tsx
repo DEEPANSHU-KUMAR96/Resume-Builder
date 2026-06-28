@@ -298,7 +298,7 @@ export default function ExperiencePage() {
       </nav>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-16 relative z-10">
+      <div className="max-w-3xl mx-auto px-4 py-8 md:px-6 md:py-12">
 
         {/* Page Header */}
         <div className="mb-10 text-center">
@@ -307,7 +307,7 @@ export default function ExperiencePage() {
         </div>
 
         {/* Main Card */}
-        <div className="glass rounded-[2rem] p-6 md:p-10 border border-white/5 shadow-2xl relative overflow-hidden">
+        <div className="glass rounded-[2rem] border border-white/5 p-4 md:p-8 space-y-6">
 
           {/* Form Section */}
           <div className="border-b border-white/5 pb-10 mb-10">
@@ -411,7 +411,7 @@ export default function ExperiencePage() {
                     type="button"
                     onClick={handleGenerateDescription}
                     disabled={generatingDescription}
-                    className="text-[10px] px-3 py-1 bg-[#DC143C]/10 hover:bg-[#DC143C]/20 text-[#DC143C] font-bold rounded-lg border border-[#DC143C]/20 transition-all uppercase tracking-widest"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#DC143C]/10 hover:bg-[#DC143C]/20 text-[#DC143C] font-bold border border-[#DC143C]/20 transition-all uppercase tracking-widest text-[10px]"
                   >
                     {generatingDescription ? '⏳ ANALYZING...' : '✨ BUILD WITH AI'}
                   </button>
@@ -439,7 +439,7 @@ export default function ExperiencePage() {
                 type="button"
                 onClick={handleAddExperience}
                 disabled={saving}
-                className="flex-1 relative group overflow-hidden rounded-xl bg-gradient-to-r from-[#DC143C] to-[#8B0000] h-12"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-white/10 hover:border-[#DC143C]/50 text-gray-400 hover:text-white text-sm font-medium transition-all duration-200"
               >
                 <div className="relative flex items-center justify-center gap-2 text-white font-bold uppercase tracking-widest text-xs">
                   {saving ? (
@@ -497,7 +497,7 @@ export default function ExperiencePage() {
                         <button
                           onClick={() => handleDeleteExperience(index)}
                           disabled={saving}
-                          className="w-10 h-10 flex items-center justify-center bg-red-500/5 hover:bg-red-500/20 text-red-500 rounded-xl border border-red-500/10 transition-all disabled:opacity-30"
+                          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 text-xs font-medium transition-all"
                           title="Delete"
                         >
                           🗑️
@@ -520,16 +520,16 @@ export default function ExperiencePage() {
         </div>
 
         {/* Navigation */}
-        <div className="mt-10 flex flex-col sm:flex-row gap-4">
+        <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Link
             href={`/resume/${resumeId}/projects`}
-            className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold uppercase tracking-widest text-xs h-14 flex items-center justify-center rounded-2xl transition-all border border-white/5"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-all duration-200"
           >
             ← Previous: Projects
           </Link>
           <Link
             href={`/resume/${resumeId}/achievements`}
-            className="flex-1 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold uppercase tracking-widest text-xs h-14 flex items-center justify-center rounded-2xl transition-all shadow-xl shadow-[#DC143C]/20"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#DC143C] to-[#8B0000] hover:opacity-90 text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-[#DC143C]/20 disabled:opacity-60"
           >
             Next: Achievements →
           </Link>

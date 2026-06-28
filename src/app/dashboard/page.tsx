@@ -331,7 +331,7 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : (
-              <div className="glass rounded-[2rem] py-20 text-center border-dashed border-2 border-white/5">
+              <div className="glass rounded-[2rem] py-20 px-6 sm:px-10 text-center border-dashed border-2 border-white/5">
                 <div className="text-5xl mb-6 opacity-20">🗂</div>
                 <h3 className="text-2xl font-bold text-white mb-2">
                   {isGuest ? 'Welcome to Resume Builder' : 'No Resumes Found'}
@@ -344,7 +344,7 @@ export default function DashboardPage() {
                 <button
                   onClick={() => guardAction(handleCreateResume)}
                   disabled={creatingResume}
-                  className="w-full sm:w-auto mx-4 sm:mx-0 px-8 py-3 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-xl transition-all"
+                  className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-xl transition-all"
                 >
                   {isGuest ? 'Get Started' : 'Create New Resume'}
                 </button>

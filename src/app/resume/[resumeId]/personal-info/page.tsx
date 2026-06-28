@@ -188,7 +188,7 @@ export default function PersonalInfoPage() {
       </nav>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-16 relative z-10">
+      <div className="max-w-3xl mx-auto px-4 py-8 md:px-6 md:py-12">
 
         {/* Page Header */}
         <div className="mb-10 text-center">
@@ -197,7 +197,7 @@ export default function PersonalInfoPage() {
         </div>
 
         {/* Form Card */}
-        <div className="glass rounded-[2rem] p-6 md:p-10 border border-white/5 shadow-2xl relative overflow-hidden">
+        <div className="glass rounded-[2rem] border border-white/5 p-4 md:p-8 space-y-6">
           <form onSubmit={handleSubmit} className="space-y-8">
 
             {/* Grid Layout */}
@@ -325,11 +325,11 @@ export default function PersonalInfoPage() {
             </div>
 
             {/* Form Actions */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-white/5">
+            <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
               <button
                 type="submit"
                 disabled={saving}
-                className="flex-[2] relative group overflow-hidden rounded-xl bg-gradient-to-r from-[#DC143C] to-[#8B0000] h-12"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#DC143C] to-[#8B0000] hover:opacity-90 text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-[#DC143C]/20 disabled:opacity-60"
               >
                 <div className="relative flex items-center justify-center gap-2 text-white font-bold uppercase tracking-widest text-xs">
                   {saving ? (
@@ -341,7 +341,7 @@ export default function PersonalInfoPage() {
               </button>
               <Link
                 href={`/resume/${resumeId}/education`}
-                className="flex-1 bg-white text-black hover:bg-[#F5F0E8] font-bold uppercase tracking-widest text-xs flex items-center justify-center rounded-xl h-12 transition-all active:scale-95"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-black hover:bg-[#F5F0E8] text-sm font-semibold transition-all duration-200 shadow-lg disabled:opacity-60"
               >
                 Next Step →
               </Link>

@@ -169,7 +169,7 @@ export default function SummaryPage() {
         </div>
       </nav>
 
-      <main className="max-w-5xl mx-auto px-4 md:px-6 py-12 md:py-20 relative z-10">
+      <main className="max-w-3xl mx-auto px-4 py-8 md:px-6 md:py-12">
         {/* Header Section */}
         <div className="mb-14 text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">Professional Summary</h2>
@@ -182,7 +182,7 @@ export default function SummaryPage() {
 
           {/* AI Helper Sidebar */}
           <div className="lg:col-span-1">
-            <div className="glass rounded-[2rem] p-8 border border-white/5 shadow-2xl sticky top-28 overflow-hidden relative">
+            <div className="glass rounded-[2rem] border border-white/5 p-4 md:p-8 space-y-6 sticky top-28 overflow-hidden relative">
               <div className="absolute top-0 right-0 w-24 h-24 bg-[#DC143C]/5 blur-2xl rounded-full"></div>
 
               <div className="flex items-center gap-3 mb-10 relative z-10">
@@ -225,7 +225,7 @@ export default function SummaryPage() {
                 <button
                   onClick={handleGenerateSummary}
                   disabled={generatingSummary}
-                  className="w-full h-12 bg-white text-black hover:bg-[#F5F0E8] font-bold rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 text-[10px] uppercase tracking-widest flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white text-black hover:bg-[#F5F0E8] disabled:opacity-50 disabled:cursor-not-allowed text-sm font-semibold transition-all duration-200 shadow-lg shadow-[#DC143C]/10"
                 >
                   {generatingSummary ? (
                     <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
@@ -245,7 +245,7 @@ export default function SummaryPage() {
           </div>
 
           <div className="lg:col-span-2">
-            <div className="glass rounded-[2rem] p-6 md:p-10 border border-white/5 shadow-2xl flex flex-col relative overflow-hidden group/editor">
+            <div className="glass rounded-[2rem] border border-white/5 p-4 md:p-8 space-y-6 flex flex-col relative overflow-hidden group/editor">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 blur-3xl rounded-full group-hover/editor:bg-[#DC143C]/5 transition-colors duration-1000"></div>
 
               <div className="flex items-center justify-between mb-8 relative z-10">
@@ -265,17 +265,17 @@ export default function SummaryPage() {
               </div>
 
               {/* Action Bar */}
-              <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
+              <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <Link
                   href={`/resume/${resumeId}/experience`}
-                  className="w-full sm:w-auto px-10 py-4 text-gray-500 font-bold hover:text-white transition-all uppercase tracking-widest text-[10px]"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-all duration-200"
                 >
                   ← Previous section
                 </Link>
                 <button
                   onClick={handleSave}
                   disabled={saving || !summary}
-                  className="w-full sm:w-auto px-12 h-14 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold rounded-2xl shadow-xl shadow-[#DC143C]/20 transition-all active:scale-95 disabled:opacity-30 uppercase tracking-widest text-xs flex items-center justify-center gap-3"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#DC143C] to-[#8B0000] hover:opacity-90 text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-[#DC143C]/20 disabled:opacity-60"
                 >
                   {saving ? (
                     <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>

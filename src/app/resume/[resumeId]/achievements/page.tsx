@@ -117,7 +117,7 @@ export default function AchievementsPage() {
         </div>
       </nav>
 
-      <div className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-20 relative z-10">
+      <div className="max-w-3xl mx-auto px-4 py-8 md:px-6 md:py-12">
 
         {/* Page Header */}
         <div className="mb-14 text-center">
@@ -127,7 +127,7 @@ export default function AchievementsPage() {
           </p>
         </div>
 
-        <div className="glass rounded-[2rem] p-6 md:p-10 border border-white/5 shadow-2xl relative overflow-hidden">
+        <div className="glass rounded-[2rem] border border-white/5 p-4 md:p-8 space-y-6">
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#DC143C]/5 blur-3xl rounded-full"></div>
 
           {/* Input Section */}
@@ -142,7 +142,7 @@ export default function AchievementsPage() {
             />
             <button
               onClick={handleAddItem}
-              className="px-10 py-4 bg-white text-black hover:bg-[#F5F0E8] font-bold rounded-2xl transition-all active:scale-95 uppercase tracking-widest text-xs h-14 flex items-center justify-center"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-white/10 hover:border-[#DC143C]/50 text-gray-400 hover:text-white text-sm font-medium transition-all duration-200"
             >
               Add Achievement
             </button>
@@ -166,7 +166,7 @@ export default function AchievementsPage() {
                 </div>
                 <button
                   onClick={() => handleRemoveItem(i)}
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-gray-600 hover:text-white hover:bg-white/5 transition-all font-black text-xs"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 text-xs font-medium transition-all"
                 >
                   ✕
                 </button>
@@ -183,17 +183,17 @@ export default function AchievementsPage() {
           </div>
 
           {/* Navigation Section */}
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-6 border-t border-white/5 pt-10 relative z-10">
+          <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
             <Link
               href={`/resume/${resumeId}/experience`}
-              className="order-2 sm:order-1 text-gray-500 font-bold hover:text-white transition-all uppercase tracking-widest text-[10px]"
+              className="order-2 sm:order-1 w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-all duration-200"
             >
               ← Previous: Industry Experience
             </Link>
             <button
               onClick={handleSave}
               disabled={saving}
-              className="order-1 sm:order-2 w-full sm:w-auto px-12 h-14 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold rounded-2xl hover:shadow-xl hover:shadow-[#DC143C]/20 transition-all active:scale-95 disabled:opacity-50 uppercase tracking-widest text-xs flex items-center justify-center gap-3"
+              className="order-1 sm:order-2 w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#DC143C] to-[#8B0000] hover:opacity-90 text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-[#DC143C]/20 disabled:opacity-60"
             >
               {saving ? (
                 <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>

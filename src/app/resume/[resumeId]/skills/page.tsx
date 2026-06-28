@@ -210,7 +210,7 @@ export default function SkillsPage() {
       </nav>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-16 relative z-10">
+      <div className="max-w-3xl mx-auto px-4 py-8 md:px-6 md:py-12">
 
         {/* Page Header */}
         <div className="mb-10 text-center">
@@ -219,7 +219,7 @@ export default function SkillsPage() {
         </div>
 
         {/* Main Card */}
-        <div className="glass rounded-[2rem] p-6 md:p-10 border border-white/5 shadow-2xl relative overflow-hidden">
+        <div className="glass rounded-[2rem] border border-white/5 p-4 md:p-8 space-y-6">
 
           {/* AI Generation Section */}
           <div className="bg-gradient-to-br from-[#DC143C]/10 to-[#8B0000]/5 border border-[#DC143C]/20 rounded-2xl p-6 md:p-8 mb-10 overflow-hidden relative group/ai">
@@ -232,7 +232,7 @@ export default function SkillsPage() {
               <button
                 onClick={handleGenerateSkills}
                 disabled={generatingSkills}
-                className="px-6 py-3 bg-white text-black hover:bg-[#F5F0E8] font-bold rounded-xl transition-all disabled:opacity-50 whitespace-nowrap uppercase tracking-widest text-xs flex items-center justify-center gap-2"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white text-black hover:bg-[#F5F0E8] disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-all duration-200 shadow-lg shadow-[#DC143C]/10"
               >
                 {generatingSkills ? (
                   <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
@@ -257,7 +257,7 @@ export default function SkillsPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="px-8 py-3 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold rounded-xl transition-all disabled:opacity-50 uppercase tracking-widest text-xs flex items-center justify-center h-14"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-white/10 hover:border-[#DC143C]/50 text-gray-400 hover:text-white text-sm font-medium transition-all duration-200"
               >
                 {saving ? (
                   <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
@@ -300,16 +300,16 @@ export default function SkillsPage() {
         </div>
 
         {/* Navigation */}
-        <div className="mt-10 flex flex-col sm:flex-row gap-4">
+        <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Link
             href={`/resume/${resumeId}/education`}
-            className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold uppercase tracking-widest text-xs h-14 flex items-center justify-center rounded-2xl transition-all border border-white/5"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-all duration-200"
           >
             ← Previous: Education
           </Link>
           <Link
             href={`/resume/${resumeId}/projects`}
-            className="flex-1 bg-gradient-to-r from-[#DC143C] to-[#8B0000] text-white font-bold uppercase tracking-widest text-xs h-14 flex items-center justify-center rounded-2xl transition-all shadow-xl shadow-[#DC143C]/20"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#DC143C] to-[#8B0000] hover:opacity-90 text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-[#DC143C]/20 disabled:opacity-60"
           >
             Next: Projects →
           </Link>
