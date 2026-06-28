@@ -5,7 +5,7 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   // Define route sets
-  const protectedRoutes = ['/dashboard', '/resume']
+  const protectedRoutes = ['/resume']
   const authRoutes = ['/auth/login', '/auth/register']
 
   // Check if current path matches any protected or auth routes
@@ -31,8 +31,6 @@ export function middleware(req: NextRequest) {
 // Ensure the middleware runs on the relevant paths
 export const config = {
   matcher: [
-    '/dashboard',
-    '/dashboard/:path*',
     '/resume/:path*',
     '/auth/login',
     '/auth/register'
