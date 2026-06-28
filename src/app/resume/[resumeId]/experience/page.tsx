@@ -403,7 +403,7 @@ export default function ExperiencePage() {
 
               {/* Description with AI */}
               <div className="group">
-                <div className="flex items-center justify-between mb-3 px-1">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 px-1">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest group-focus-within:text-[#DC143C]">
                     Job Description *
                   </label>
