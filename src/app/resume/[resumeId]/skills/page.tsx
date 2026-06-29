@@ -125,7 +125,7 @@ export default function SkillsPage() {
   // Generate skills using AI
   const handleGenerateSkills = async () => {
     // Get job title and experience level for AI generation
-    const jobTitle = resume?.personalInfo?.fullname ? prompt('What is your job title/role?') : '';
+    const jobTitle = prompt('What is your job title/role?');
     const experienceLevel = prompt('What is your experience level? (e.g., Junior, Mid-level, Senior)');
 
     if (!jobTitle || !experienceLevel) {
