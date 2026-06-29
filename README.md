@@ -1,36 +1,145 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 AI Resume Builder
 
-## Getting Started
+An intelligent, full-stack resume builder powered by GROQ AI — built with Next.js, MongoDB, and Tailwind CSS.
 
-First, run the development server:
+🔗 **Live Demo:- https://resume-builder-topaz-mu.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## ✨ Features
+
+- 🔐 **JWT Authentication** — Secure register/login with HTTP-only cookies
+- 📝 **Multi-step Resume Form** — Personal Info, Education, Skills, Projects, Experience, Achievements, Summary
+- 🤖 **AI-Powered Content Generation** — GROQ AI generates professional summaries, skills, experience descriptions, and project descriptions
+- 📄 **Resume Preview** — Live preview of your complete resume
+- 📥 **PDF Download** — Download your resume as a PDF
+- 📊 **ATS Score Checker** — Check how well your resume performs against ATS systems
+- 💾 **Auto-save** — Every section auto-saves to MongoDB
+- 📱 **Fully Responsive** — Works on mobile, tablet, and desktop
+- 🛡️ **Route Protection** — Middleware-based auth guard on all protected routes
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+| Tech | Usage |
+|---|---|
+| Next.js 15 (App Router) | Framework |
+| TypeScript | Type safety |
+| Tailwind CSS v4 | Styling |
+| Axios | HTTP client |
+
+### Backend
+| Tech | Usage |
+|---|---|
+| Next.js API Routes | REST API |
+| MongoDB + Mongoose | Database |
+| JWT + HTTP-only Cookies | Authentication |
+| GROQ SDK | AI generation |
+| bcrypt | Password hashing |
+
+---
+
+## 📁 Project Structure
+
+```
+resume-builder/
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── auth/
+│   │   │   │   ├── register/route.ts
+│   │   │   │   ├── login/route.ts
+│   │   │   │   └── logout/route.ts
+│   │   │   ├── resume/
+│   │   │   │   ├── create/route.ts
+│   │   │   │   ├── route.ts
+│   │   │   │   └── [resumeId]/route.ts
+│   │   │   └── ai/
+│   │   │       ├── generate-summery/route.ts
+│   │   │       ├── generate-skills/route.ts
+│   │   │       ├── generate-experience/route.ts
+│   │   │       ├── generate-project-description/route.ts
+│   │   │       ├── improve-content/route.ts
+│   │   │       └── ats-score/route.ts
+│   │   ├── auth/
+│   │   │   ├── login/page.tsx
+│   │   │   └── register/page.tsx
+│   │   ├── dashboard/page.tsx
+│   │   └── resume/
+│   │       └── [resumeId]/
+│   │           ├── personal-info/page.tsx
+│   │           ├── education/page.tsx
+│   │           ├── skills/page.tsx
+│   │           ├── projects/page.tsx
+│   │           ├── experience/page.tsx
+│   │           ├── achievements/page.tsx
+│   │           ├── summary/page.tsx
+│   │           └── preview/page.tsx
+│   ├── models/
+│   │   ├── user.model.ts
+│   │   └── resume.model.ts
+│   ├── lib/
+│   │   ├── db.ts
+│   │   └── jwt.ts
+│   └── types/
+│       └── resume.types.ts
+├── middleware.ts
+├── .env.local
+└── package.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌐 API Reference
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Auth Endpoints
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/register` | Register new user |
+| POST | `/api/auth/login` | Login user |
+| POST | `/api/auth/logout` | Logout user |
 
-## Learn More
+### Resume Endpoints
 
-To learn more about Next.js, take a look at the following resources:
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/resume/create` | Create new resume |
+| GET | `/api/resume` | Get all resumes |
+| GET | `/api/resume/[resumeId]` | Get single resume |
+| PATCH | `/api/resume/[resumeId]` | Update resume |
+| DELETE | `/api/resume/[resumeId]` | Delete resume |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### AI Endpoints
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/ai/generate-summery` | Generate professional summary |
+| POST | `/api/ai/generate-skills` | Generate skills list |
+| POST | `/api/ai/generate-experience` | Generate experience description |
+| POST | `/api/ai/generate-project-description` | Generate project description |
+| POST | `/api/ai/improve-content` | Improve existing content |
+| POST | `/api/ai/ats-score` | Get ATS compatibility score |
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🗺️ Resume Builder Flow
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+Register / Login
+      ↓
+  Dashboard
+      ↓
+Create New Resume
+      ↓
+  Personal Info → Education → Skills → Projects → Experience → Achievements → Summary
+      ↓
+ Preview Resume
+      ↓
+ Download PDF
+
+---
+## 👨‍💻 Author
+
+**Deepanshu Kumar**
+- GitHub: [@DEEPANSHU-KUMAR96](https://github.com/DEEPANSHU-KUMAR96)
